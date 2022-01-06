@@ -1,0 +1,6 @@
+depends_on:
+  - base
+parameters:
+  env_name: demo_prod_env
+env:
+  var1: prod-specific-var-1

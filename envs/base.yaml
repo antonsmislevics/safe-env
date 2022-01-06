@@ -1,0 +1,25 @@
+parameters:
+  param1: param1_value
+  param2: param2_value
+  env_name: demo_base_env
+config:
+  keyring:
+    service_name: "{PARAM: env_name}_secrets"
+  env_nested_delimiter: .                         # not implemented yet
+vaults:
+  - name: KeyVault
+    type: AzureKeyVault
+    params:
+      url: "https://[kv-name]-{PARAM: env_name}.vault.azure.net/"
+      credential: DefaultAzureCredential
+secrets:
+  - name: secret1
+    keyring_service_name: temp_service_group
+    keyring_name: temp_secret
+    local: True               # local only secret - stored in keyring only
+env:
+  var1: common-var-1
+  var2: common-var-2
+  var3: "{PARAM: param1} - {PARAM: param2}"
+  secret1: "{SECRET: secret1}"                  
+  secret2: "{SECRET: [name_in_keyvault]}"     # secret to be loaded from keyvault and cached in local keyring
