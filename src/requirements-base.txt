@@ -5,3 +5,4 @@ pyyaml
 pydantic
 typer
 tabulate
+jmespath

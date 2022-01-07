@@ -4,6 +4,7 @@ from .config import (
     SafeEnvConfig,
     VaultConfig,
     SecretConfig,
+    ResourceConfig,
     EnvironmentConfigurationMinimal,
     EnvironmentConfiguration
 )

@@ -1,10 +1,10 @@
 from typing import Any, Dict
 from ...models import VaultConfig
 # from azure.core.credentials import TokenCredential
-from azure.identity import DefaultAzureCredential, AzureCliCredential
 from azure.keyvault.secrets import SecretClient
 from . import BaseVault
 from ..values import TemplatedValue
+from ... import utils
 
 
 class AzureKeyVault(BaseVault):
@@ -43,16 +43,8 @@ class AzureKeyVault(BaseVault):
                                       "vault_credential",
                                       settings.params['credential'],
                                       value_providers).get_value()
-        credential_name_to_type_mapping = {
-            "DefaultAzureCredential": DefaultAzureCredential,
-            "AzureCliCredential": AzureCliCredential
-        }
-        if vault_credential_name:
-            vault_credential_type = credential_name_to_type_mapping.get(vault_credential_name)
-            if not(vault_credential_type):
-                raise Exception(f"Unknown vault credential type: {vault_credential_name}")
-        else:
-            vault_credential_type = DefaultAzureCredential
+        
+        vault_credential_type = utils.azure_credentials_name_to_type(vault_credential_name)
 
         self.name = name
         self.url = vault_url

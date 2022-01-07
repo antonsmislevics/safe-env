@@ -1,7 +1,7 @@
 
 from ..models import EnvironmentConfiguration
 from .vaults import KeyringVault, AzureKeyVault
-from .valueproviders import HostEnvValueProvider, ParamValueProvider, TemplatedValueProvider, SecretValueProvider
+from .valueproviders import HostEnvValueProvider, ParamValueProvider, TemplatedValueProvider, SecretValueProvider, ResourceValueProvider
 from .templatevalueproviders import TemplateValueProviders
 from .values import ValueStatus
 
@@ -19,21 +19,30 @@ class EnvironmentLoader():
         self.vaults = [AzureKeyVault(name=x.name) for x in self.config.vaults]
 
         self.host_env_value_provider = HostEnvValueProvider(error_on_missing_value=False)
+        self.value_providers.register(self.host_env_value_provider)
+
         self.param_value_provider = ParamValueProvider(templated_value_dict=self.config.parameters,
-                                                  value_providers=self.value_providers,
-                                                  error_on_missing_value=True)
+                                                       value_providers=self.value_providers,
+                                                       error_on_missing_value=True)
+        self.value_providers.register(self.param_value_provider)
+
         self.secret_value_provider = SecretValueProvider(secrets=self.config.secrets,
-                                                    value_providers=self.value_providers, 
-                                                    keyring=self.keyring,
-                                                    vaults=self.vaults,
-                                                    force_reload_from_remote=self.force_reload_from_remote,
-                                                    error_on_missing_value=True)
-        
+                                                         value_providers=self.value_providers, 
+                                                         keyring=self.keyring,
+                                                         vaults=self.vaults,
+                                                         force_reload_from_remote=self.force_reload_from_remote,
+                                                         error_on_missing_value=True)
+        self.value_providers.register(self.secret_value_provider)
+
+        self.resource_value_provider = ResourceValueProvider(resources=self.config.resources,
+                                                             secret_values=self.secret_value_provider.values,
+                                                             value_providers=self.value_providers,
+                                                             force_reload_from_remote=self.force_reload_from_remote,
+                                                             error_on_missing_value=True)
+        self.value_providers.register(self.resource_value_provider)
+
         # TODO: add value_providers to generate random values (for example, random guid, random string, random value from dictionary, etc.)
         # random values could also have additional parameters as from-to - perhaps specified in separate section VALUE_GENERATORS/RANDOM (similar as for secrets)
-        self.value_providers.register(self.host_env_value_provider)
-        self.value_providers.register(self.param_value_provider)
-        self.value_providers.register(self.secret_value_provider)
 
         if self.keyring:
             self.keyring.load_from_settings(self.config.config.keyring, value_providers=self.value_providers)

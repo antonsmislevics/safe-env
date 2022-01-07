@@ -29,6 +29,14 @@ class SecretConfig(BaseModel):
     local: Optional[bool] = False
 
 
+class ResourceConfig(BaseModel):
+    name: str
+    type: Optional[str] = "AzureREST"
+    params: Optional[Dict[str, str]] = None
+    query: Optional[str]
+    cache_secret: Optional[str]
+
+
 class EnvironmentConfigurationMinimal(BaseModel):
     depends_on: Optional[List[str]] = None
 
@@ -37,5 +45,6 @@ class EnvironmentConfiguration(EnvironmentConfigurationMinimal):
     config: Optional[SafeEnvConfig]
     vaults: Optional[List[VaultConfig]] = []
     secrets: Optional[List[SecretConfig]] = []
+    resources: Optional[List[ResourceConfig]] = []
     parameters: Optional[Dict[str,str]] = dict()
     env: Optional[Dict[str,str]] = dict()

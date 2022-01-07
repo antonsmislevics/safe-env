@@ -2,7 +2,8 @@ import os
 from tabulate import tabulate
 import yaml
 from pydantic import BaseModel
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Type
+from azure.identity import DefaultAzureCredential, AzureCliCredential
 
 
 def obj_to_dict(item: Any) -> Dict:
@@ -13,6 +14,25 @@ def obj_to_dict(item: Any) -> Dict:
     else:
         item_dict = item.__dict__
     return item_dict
+
+
+def type_name_to_type(type_name: str, expected_types: List[Type], default_type: Type = None) -> Type:
+    if type_name:
+        for expected_type in expected_types:
+            if type_name == expected_type.__name__:
+                return expected_type
+    else:
+        if default_type:
+            return default_type
+        
+    expected_type_names = list([x.__name__ for x in expected_types])
+    raise Exception(f"Provided type name '{type_name}' is not expected. Expected types are: {expected_type_names}")
+
+
+def azure_credentials_name_to_type(type_name: str):
+    expected_types = [DefaultAzureCredential, AzureCliCredential]
+    default_type = DefaultAzureCredential
+    return type_name_to_type(type_name, expected_types, default_type=default_type)
 
 
 def print_table(items: List[Any], fields: List[str], headers: List[str], tablefmt:str = "pretty", sort_by_field_index: int = None) -> str:

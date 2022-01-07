@@ -16,6 +16,7 @@ class SecretValue(BaseValue):
             name_in_keyring = name
         self.name_in_keyring = name_in_keyring
         self.is_local_only = is_local_only
+        self.is_resource_cache = False
         self.keyring = keyring
         self.service_name_in_keyring = service_name_in_keyring
         self.vaults = vaults
@@ -40,7 +41,6 @@ class SecretValue(BaseValue):
         secret = vault.get(self.name_in_vault)
         if secret:
             # value is found in vault - save the value locally
-            # TODO: retrieve secret id here as well to generate config files
             value = secret.value
             self.id = secret.id
             if self.keyring:
@@ -49,12 +49,14 @@ class SecretValue(BaseValue):
 
     def _get_value(self):
         value = None
+
+        is_local = self.is_local_only or self.is_resource_cache
         
-        if self.keyring and (self.is_local_only or not(self.force_reload_from_remote)):
+        if self.keyring and (is_local or not(self.force_reload_from_remote)):
             # 1. check local keyring
             value = self.keyring.get(self.name_in_keyring, self.service_name_in_keyring)
 
-        if not(value) and not(self.is_local_only):
+        if not(value) and not(is_local):
             # 2. value is not found locally -> check remote vaults
             if self.vault_name:
                 # default vault name is specified - check default vault
