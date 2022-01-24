@@ -1,10 +1,13 @@
 import os
 from pathlib import Path
+import logging
 import yaml
 from typing import Type, List, Dict
-from pydantic import BaseModel
-from .models import EnvironmentConfiguration, EnvironmentConfigurationMinimal, EnvironmentInfo
+from pydantic import BaseModel, parse_obj_as
+from safe_env.models.config import ResourceTemplateConfig, ResourceTemplateConfigNoName
+from .models import EnvironmentConfiguration, EnvironmentConfigurationMinimal, EnvironmentInfo, ResourceTemplateConfig
 from .envloader.envloader import EnvironmentLoader
+
 
 class EnvironmentManager():
     def __init__(self):
@@ -13,6 +16,7 @@ class EnvironmentManager():
 
     def reload(self):
         self.env_info_list = []
+        self.resource_template_list = []    # type: List[ResourceTemplateConfig]
 
 
     def load_from_folder(self, config_dir: Path):
@@ -22,6 +26,14 @@ class EnvironmentManager():
         for f in config_dir.glob("*.yaml"):
             self.add(f)
 
+    def load_resource_tempates_from_folder(self, path: Path):
+        if not(path.exists()):
+            logging.warn(f"Resource Templates directory '{path}' cannot be found. Resource templates will not be loaded.")
+            return
+
+        for f in path.glob("*.yaml"):
+            self.add_resource_template(f)
+   
 
     def add(self, path: Path):
         env = EnvironmentInfo(
@@ -29,6 +41,18 @@ class EnvironmentManager():
             name = os.path.splitext(path.name)[0]
         )
         self.env_info_list.append(env)
+
+    def add_resource_template(self, path: Path):
+        resource_tempates = self._load_yaml(path, Dict[str, ResourceTemplateConfigNoName])
+        for key, value in resource_tempates.items():
+            self.resource_template_list.append(ResourceTemplateConfig(name=key, **value.dict()))
+    
+
+    def get_resource_template(self, name) -> ResourceTemplateConfig:
+        resource_template = next((x for x in self.resource_template_list if x.name == name), None)
+        if not(resource_template):
+            raise Exception(f"Resource template '{name}' cannot be found.")
+        return resource_template
 
 
     def list(self):
@@ -42,10 +66,14 @@ class EnvironmentManager():
         return env_info
 
 
-    def _load_yaml(self, name: str, target_type: Type[BaseModel]):
-        parsed_yaml = None
+    def _load_env_yaml(self, name: str, target_type: Type[BaseModel]):
         env_info = self.get(name)
-        with open(env_info.path, 'r') as f:
+        return self._load_yaml(env_info.path, target_type)
+
+
+    def _load_yaml(self, file_path: str, target_type: Type[BaseModel]):
+        parsed_yaml = None
+        with open(file_path, 'r') as f:
             try:
                 parsed_yaml=yaml.safe_load(f)
                 if parsed_yaml is None:
@@ -57,7 +85,7 @@ class EnvironmentManager():
         elif target_type is None:
             return parsed_yaml
         else:
-            return target_type.parse_obj(parsed_yaml)
+            return parse_obj_as(target_type, parsed_yaml)
 
 
     def load(self, names: List[str]) -> EnvironmentConfiguration:
@@ -66,15 +94,27 @@ class EnvironmentManager():
         return EnvironmentConfiguration.parse_obj(env_dict)
 
 
-    def get_env_variables_and_secrets(self, config: EnvironmentConfiguration, force_reload_from_remote: bool = False) -> Dict[str,str]:
-        loader = EnvironmentLoader(config, force_reload_from_remote)
+    def get_env_variables_and_secrets(self,
+                                      config: EnvironmentConfiguration,
+                                      force_reload_from_remote: bool = False,
+                                      force_reload_secrets: bool = False,
+                                      force_reload_resources: bool = False,
+                                      do_not_cache_resources: bool = False,
+                                      do_not_cache_secrets: bool = False) -> Dict[str,str]:
+        loader = EnvironmentLoader(config,
+                                   get_resource_template_delegate=self.get_resource_template,
+                                   force_reload_from_remote=force_reload_from_remote,
+                                   force_reload_secrets=force_reload_secrets,
+                                   force_reload_resources=force_reload_resources,
+                                   do_not_cache_resources=do_not_cache_resources,
+                                   do_not_cache_secrets=do_not_cache_secrets)
         return loader.load_envs_and_secrets()
 
 
     def get_env_chain(self, name: str, current_chain: List[str] = None) -> List[str]:
         chain = [] if current_chain is None else current_chain
         if name not in chain:
-            env = self._load_yaml(name, EnvironmentConfigurationMinimal)    # type: EnvironmentConfigurationMinimal
+            env = self._load_env_yaml(name, EnvironmentConfigurationMinimal)    # type: EnvironmentConfigurationMinimal
             if env.depends_on:
                 for dep_name in env.depends_on:
                     chain = self.get_env_chain(dep_name, chain)
@@ -100,7 +140,7 @@ class EnvironmentManager():
     def get_merged_dict(self, names: List[str]):
         merged_dict = None
         for name in names:
-            d = self._load_yaml(name, None)
+            d = self._load_env_yaml(name, None)
             if d is None:
                 continue
             if merged_dict is None:

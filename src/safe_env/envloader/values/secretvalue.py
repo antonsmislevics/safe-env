@@ -1,27 +1,47 @@
+from __future__ import annotations
 from typing import List, Dict
-from . import BaseValue, TemplatedValue
+from .basevaluewithtemplatedconfiguration import BaseValueWithTemplatedConfiguration
 from ..vaults import BaseVault
 from ...models import SecretConfig
 
 
-class SecretValue(BaseValue):
-    def __init__(self, name: str, vault_name: str, name_in_vault: str, service_name_in_keyring: str, name_in_keyring: str, is_local_only: bool, keyring: BaseVault, vaults: List[BaseVault], force_reload_from_remote: bool = False):
+class SecretValue(BaseValueWithTemplatedConfiguration):
+    def __init__(self,
+                 name: str,
+                 vault_name: str = None,
+                 name_in_vault: str = None,
+                 service_name_in_keyring: str = None,
+                 name_in_keyring: str = None,
+                 is_local_only: bool = None,
+                 keyring: BaseVault = None,
+                 vaults: List[BaseVault] = None,
+                 templated_args: Dict[str,str] = None,
+                 templated_args_value_providers: Dict = None,
+                 force_reload_from_remote: bool = False,
+                 do_not_cache: bool = False):
         type_name = "SECRET"
-        super().__init__(type_name, name)
+        super().__init__(type_name=type_name,
+                         name=name,
+                         templated_args=templated_args,
+                         templated_args_value_providers=templated_args_value_providers)
         self.vault_name = vault_name
-        if not(name_in_vault):
-            name_in_vault = name
         self.name_in_vault = name_in_vault
-        if not(name_in_keyring):
-            name_in_keyring = name
         self.name_in_keyring = name_in_keyring
         self.is_local_only = is_local_only
-        self.is_resource_cache = False
         self.keyring = keyring
         self.service_name_in_keyring = service_name_in_keyring
         self.vaults = vaults
         self.force_reload_from_remote = force_reload_from_remote
+        self.do_not_cache = do_not_cache
         self.id = None
+
+
+    def on_templated_config_loaded(self):
+        if not(self.name_in_vault):
+            self.name_in_vault = self.name
+        if not(self.name_in_keyring):
+            self.name_in_keyring = self.name
+        super().on_templated_config_loaded()
     
     def get_service_name(self):
         service_name = self.service_name_in_keyring
@@ -43,14 +63,14 @@ class SecretValue(BaseValue):
             # value is found in vault - save the value locally
             value = secret.value
             self.id = secret.id
-            if self.keyring:
-                self.keyring.set(self.name_in_keyring, value, self.service_name_in_keyring)
+            if not(self.do_not_cache):
+                self.update_value(value, save_to_local_only=True)
         return value
 
     def _get_value(self):
         value = None
 
-        is_local = self.is_local_only or self.is_resource_cache
+        is_local = self.is_local_only
         
         if self.keyring and (is_local or not(self.force_reload_from_remote)):
             # 1. check local keyring
@@ -70,25 +90,50 @@ class SecretValue(BaseValue):
                         break
         return value
 
-    @staticmethod    
-    def load_from_config(settings: SecretConfig, value_providers: Dict, keyring: BaseVault, vaults: List[BaseVault], force_reload_from_remote: bool = False):
+    def _get_default_vault(self) -> BaseVault:
+        vault = None
+        if self.vault_name:
+            vault = self._get_vault_by_name(self.vault_name)
+        elif len(self.vaults) == 1:
+            vault = self.vaults[0]
+        else:
+            raise Exception(f"Cannot determine default vault for secret '{self.name}': configuration file has multiple vaults, but vault for this secret is not specified.")
+        return vault
+
+    def update_value(self, value, save_to_local_only: bool = False):
+        self.ensure_templated_config_loaded()
+        # 1. save/delete value to/from local keyring
+        if self.keyring:
+            if not(self.do_not_cache) or self.is_local_only:
+                # if do_not_cache is True, update only if secret is local
+                if value:
+                    self.keyring.set(self.name_in_keyring, value, self.service_name_in_keyring)
+                else:
+                    self.keyring.delete(self.name_in_keyring, self.service_name_in_keyring)
+            
+        # 2. save/delete value to/from vault
+        if not(self.is_local_only) and not(save_to_local_only):
+            vault = self._get_default_vault()
+            if value:
+                vault.set(self.name_in_vault, value)
+            else:
+                vault.delete(self.name_in_vault)
+
+    @staticmethod
+    def load_from_config(settings: SecretConfig, value_providers: Dict, keyring: BaseVault, vaults: List[BaseVault], force_reload_from_remote: bool = False, do_not_cache: bool = False) -> SecretValue:
         name = settings.name
         is_local_only = settings.local
-
-        vault = TemplatedValue(None,
-                                    "vault",
-                                    settings.vault,
-                                    value_providers).get_value()
-        vault_name = TemplatedValue(None,
-                                    "vault_name",
-                                    settings.vault_name,
-                                    value_providers).get_value()
-        keyring_service_name = TemplatedValue(None,
-                                    "keyring_service_name",
-                                    settings.keyring_service_name,
-                                    value_providers).get_value()
-        keyring_name = TemplatedValue(None,
-                                    "keyring_name",
-                                    settings.keyring_name,
-                                    value_providers).get_value()
-        return SecretValue(name, vault, vault_name, keyring_service_name, keyring_name, is_local_only, keyring, vaults, force_reload_from_remote)
+        templated_args = {
+            "vault_name": settings.vault,
+            "name_in_vault": settings.vault_name,
+            "service_name_in_keyring": settings.keyring_service_name,
+            "name_in_keyring": settings.keyring_name
+        }
+        return SecretValue(name,
+                           templated_args=templated_args,
+                           templated_args_value_providers=value_providers,
+                           is_local_only=is_local_only,
+                           keyring=keyring,
+                           vaults=vaults,
+                           force_reload_from_remote=force_reload_from_remote,
+                           do_not_cache=do_not_cache)

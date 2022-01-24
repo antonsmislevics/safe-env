@@ -2,8 +2,12 @@ from abc import abstractmethod
 
 class BaseVault():
     def __init__(self, name: str):
-        self._is_ready = True
+        self._is_ready = False
         self.name = name
+        pass
+
+    def init_vault(self):
+        self._is_ready = True
         pass
 
     @property

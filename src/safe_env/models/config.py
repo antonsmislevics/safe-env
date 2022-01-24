@@ -14,14 +14,16 @@ class SafeEnvConfig(BaseModel):
     env_nested_delimiter: Optional[str] = "."
 
 
-class VaultConfig(BaseModel):
-    name: str
+class VaultConfigNoName(BaseModel):
     type: Optional[str] = "AzureKeyVault"
     params: Optional[Dict[str, str]] = None
 
 
-class SecretConfig(BaseModel):
+class VaultConfig(VaultConfigNoName):
     name: str
+
+
+class SecretConfigNoName(BaseModel):
     vault: Optional[str]
     vault_name: Optional[str]
     keyring_service_name: Optional[str]
@@ -29,12 +31,30 @@ class SecretConfig(BaseModel):
     local: Optional[bool] = False
 
 
-class ResourceConfig(BaseModel):
+class SecretConfig(SecretConfigNoName):
     name: str
+
+
+class ResourceTemplateConfigNoName(BaseModel):
+    params: Optional[Dict[str, Optional[str]]] = None
     type: Optional[str] = "AzureREST"
+    inputs: Optional[Dict[str, str]] = None
+
+
+class ResourceTemplateConfig(ResourceTemplateConfigNoName):
+    name: str
+
+
+class ResourceConfigNoName(BaseModel):
+    template: Optional[str]
     params: Optional[Dict[str, str]] = None
-    query: Optional[str]
     cache_secret: Optional[str]
+    query: Optional[str]
+    parent: Optional[str]
+
+
+class ResourceConfig(ResourceConfigNoName):
+    name: str
 
 
 class EnvironmentConfigurationMinimal(BaseModel):
@@ -43,8 +63,8 @@ class EnvironmentConfigurationMinimal(BaseModel):
 
 class EnvironmentConfiguration(EnvironmentConfigurationMinimal):
     config: Optional[SafeEnvConfig]
-    vaults: Optional[List[VaultConfig]] = []
-    secrets: Optional[List[SecretConfig]] = []
-    resources: Optional[List[ResourceConfig]] = []
+    vaults: Optional[Dict[str,VaultConfigNoName]] = dict()
+    secrets: Optional[Dict[str,SecretConfigNoName]] = dict()
+    resources: Optional[Dict[str,ResourceConfigNoName]] = dict()
     parameters: Optional[Dict[str,str]] = dict()
     env: Optional[Dict[str,str]] = dict()

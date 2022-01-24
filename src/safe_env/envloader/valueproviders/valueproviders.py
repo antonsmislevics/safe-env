@@ -5,8 +5,9 @@ from ..values import TemplatedValue
 
 
 class DictValueProvder(BaseValueProvider):
-    def __init__(self, values: Dict[str, str], **kwargs):        
+    def __init__(self, aliases: List[str], values: Dict[str, str], **kwargs):        
         super().__init__(**kwargs)
+        self.aliases = aliases
         self.values = values
 
     def is_known_value(self, name) -> bool:
@@ -15,8 +16,8 @@ class DictValueProvder(BaseValueProvider):
 
 class HostEnvValueProvider(DictValueProvder):
     def __init__(self, **kwargs):
-        super().__init__(os.environ, **kwargs)
-        self.aliases = ["ENV"]
+        aliases = ["ENV"]
+        super().__init__(aliases, os.environ, **kwargs)
 
 
 class TemplatedValueProvider(BaseValueProvider):

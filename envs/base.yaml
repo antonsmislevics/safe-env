@@ -1,40 +1,17 @@
 parameters:
   param1: param1_value
   param2: param2_value
-  env_name: demo_base_env
-  subscription_id: "[subscription_id]"
-  resource_group_name: "[resource_group_name]"
-  storage_account_name: "[storage_account_name]"
+  env_name: base_env
+  secret_name: secret1
 config:
   keyring:
     service_name: "{PARAM: env_name}_secrets"
-  env_nested_delimiter: .                         # not implemented yet
-vaults:
-  - name: KeyVault
-    type: AzureKeyVault
-    params:
-      url: "https://[kv-name]-{PARAM: env_name}.vault.azure.net/"
-      credential: DefaultAzureCredential
 secrets:
-  - name: secret1
-    keyring_service_name: temp_service_group
-    keyring_name: temp_secret
-    local: True               # local only secret - stored in keyring only
-  - name: cached_storage_account_key
-    keyring_name: storage_account_key
-resources:
-  - name: storage_account_key
-    type: AzureREST
-    params:
-      url: "/subscriptions/{PARAM: subscription_id}/resourceGroups/{PARAM: resource_group_name}/providers/Microsoft.Storage/storageAccounts/{PARAM: storage_account_name}/listKeys?api-version=2021-04-01&$expand=kerb"
-      credential: DefaultAzureCredential
-      method: POST
-    query: keys[0].value        # JMESPath query to extract required information from the response
-    cache_secret: cached_storage_account_key
+  secret1:
+    keyring_name: demo_secret1
+    local: True         # local only secret is stored in keyring only
 env:
-  var1: common-var-1
-  var2: common-var-2
-  var3: "{PARAM: param1} - {PARAM: param2}"
-  secret1: "{SECRET: secret1}"                  
-  secret2: "{SECRET: [name_in_keyvault]}"     # secret to be loaded from keyvault and cached in local keyring
-  secret3: "{RESOURCE: storage_account_key}"  # secret to be loaded from azure rest resource request
+  var1: var1
+  var2: "{PARAM: param1} - {PARAM: param2}"
+  secret_var: "{SECRET: secret1}"
+  dynamic_secret_var: "{SECRET: {PARAM: secret_name}}"

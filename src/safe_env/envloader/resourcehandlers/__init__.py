@@ -1,3 +1,3 @@
 from .baseresourcehandler import BaseResourceHandler
 from .azurerestresourcehandler import AzureRESTResourceHandler
-from .resourcehandlerfactory import ResourceHandlerFactory
+# from .delayedloadresourcehandler import DelayedLoadResourceHandler

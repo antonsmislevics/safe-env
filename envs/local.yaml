@@ -1,6 +1,4 @@
-# NOTE: this environment does not have depends_on section, because we plan to use it as "add-in" on top of other environments
-#       For example: se show dev local
-env:  
-  http_proxy: 'http-proxy-value'
-  https_proxy: 'https-proxy-value'
-  no_proxy: 'no-proxy-value'
+env:
+  http_proxy: "http-proxy-value"
+  https_proxy: "https-proxy-value"
+  no_proxy: "no-proxy-value"
