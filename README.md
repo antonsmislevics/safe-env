@@ -14,7 +14,7 @@ To achieve this, safe-env follows a set of principles:
 ## How to install?
 The package is still in active development and can be installed directly from git repository:
 ```bash
-python -m pip install -e "git+https://github.com/antonsmislevics/safe-env.git#egg=safe-env[local]&subdirectory=src"
+python -m pip install "git+https://github.com/antonsmislevics/safe-env.git#egg=safe-env[local]&subdirectory=src"
 ```
 The package does not require to be installed in the same environment that is used for development. It is recommended to create a seperate python virtual environment and install the package into it.
 
