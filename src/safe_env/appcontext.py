@@ -41,7 +41,6 @@ class AppContext():
         stdout_handler = logging.StreamHandler(sys.stdout)
         handlers = [stdout_handler]
 
-        print("configuring logging")
         logging.basicConfig(
             level=logging.INFO if self.verbose else logging.WARNING, 
             # format='[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s',
