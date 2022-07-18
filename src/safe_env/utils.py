@@ -90,6 +90,13 @@ def print_env_export_script_cmd(item: Any, unset=False) -> str:
     return ";".join(script_parts)
 
 
+def print_env_content(item: Any, unset=False) -> str:
+    # TODO: unset is not used currently
+    item_dict = obj_to_dict(item)
+    script_parts = [f"{key}={value}" for (key, value) in item_dict.items()]
+    return os.linesep.join(script_parts)
+
+
 def print_docker_env_content(item: Any, unset=False) -> str:
     # TODO: unset is not used currently
     item_dict = obj_to_dict(item)

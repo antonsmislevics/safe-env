@@ -60,6 +60,7 @@ def get_env_vars_script(names: List[str],
                         is_bash: bool=False,
                         is_powershell: bool=False,
                         is_cmd: bool=False,
+                        is_env: bool=False,
                         is_docker_env: bool=False,
                         is_unset: bool=False,
                         force_reload_secrets: bool = False,
@@ -79,6 +80,8 @@ def get_env_vars_script(names: List[str],
         script = utils.print_env_export_script_powershell(env_variables, unset=is_unset)
     elif is_cmd:
         script = utils.print_env_export_script_cmd(env_variables, unset=is_unset)
+    elif is_env:
+        script = utils.print_env_content(env_variables, unset=is_unset)
     elif is_docker_env:
         script = utils.print_docker_env_content(env_variables, unset=is_unset)
     else:
@@ -133,14 +136,18 @@ def load_env(names: List[str],
             "--cmd",
             help="Generate CMD env variable export script."
         ),
+    is_env: Optional[bool] = typer.Option(
+        None,
+            "--env",
+            help="Generate env file."
+        ),
     is_docker_env: Optional[bool] = typer.Option(
         None,
             "--docker",
             help="Generate env file for docker-compose."
         )
-
     ):
-    if is_bash or is_cmd or is_docker_env or is_powershell:
+    if is_bash or is_cmd or is_env or is_docker_env or is_powershell:
         ctx.switch_output_to_command_mode()
     
     ctx.load()
@@ -150,6 +157,7 @@ def load_env(names: List[str],
                                 is_bash,
                                 is_powershell,
                                 is_cmd,
+                                is_env,
                                 is_docker_env,
                                 is_unset=False,
                                 force_reload_secrets=force_reload_secrets,

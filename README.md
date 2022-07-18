@@ -195,6 +195,23 @@ dynamic_secret_var=${dynamic_secret_var}
 $ se activate dev --docker > docker-dev.env
 ```
 
+Finally, you can generate `.env` file containing all values, and use it with Docker or other tools.
+```bash
+# preview env file content
+$ se activate dev --env
+
+var1=dev_var1
+var2=param1_value - param2_value
+secret_var=dev_secret_value
+dynamic_secret_var=dev_secret_value
+
+# write to .env file
+$ se activate dev --env > dev.env
+```
+
+**IMPORTANT:** Please note that since this file will contain all values (including secrets) it is recommended to: 1) use such files only if there is no option to load values from in-memory environment variables (as in previous scenario with `.env` file for docker compose); 2) delete this file immediately after use (for example, generate the file -> start Docker container with the file -> delete the file when container is started).
+
+
 # Working with secrets
 Secrets can be stored in local keyring or external vault. In the previous section we've shown how to use secrets from local keyring. In order to use secrets from external vault, first we need to add vaults section to environment configuration file.
 ```yaml
