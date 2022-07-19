@@ -145,9 +145,15 @@ def load_env(names: List[str],
         None,
             "--docker",
             help="Generate env file for docker-compose."
+        ),
+    out_path: Optional[str] = typer.Option(
+        None,
+            "--out",
+            help="Path of the file where to save output."
         )
     ):
-    if is_bash or is_cmd or is_env or is_docker_env or is_powershell:
+    if (out_path is None) and (is_bash or is_cmd or is_env or is_docker_env or is_powershell):
+        # disable printing logs since script code is written to console
         ctx.switch_output_to_command_mode()
     
     ctx.load()
@@ -164,7 +170,11 @@ def load_env(names: List[str],
                                 force_reload_resources=force_reload_resources,
                                 do_not_cache_resources=do_not_cache_resources,
                                 do_not_cache_secrets=do_not_cache_secrets)
-    typer.echo(script)
+    if out_path is None:
+        typer.echo(script)
+    else:
+        with open(out_path, 'w') as f:
+            f.write(script)
 
 
 @secrets_app.command("list")
