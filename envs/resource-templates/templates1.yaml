@@ -10,3 +10,16 @@ azure_storage_account_key:
     credential: DefaultAzureCredential
     method: POST
     query: "keys[{PARAM: key_index}].value"        # JMESPath query to extract required information from the response
+azure_devops_pat:
+  params:
+    index_url:
+  type: AzureDevOpsPAT
+  inputs:
+    index_url: "{PARAM: index_url}"
+azure_devops_pat_index_url:
+  params:
+    index_url:
+  type: AzureDevOpsPAT
+  inputs:
+    index_url: "{PARAM: index_url}"
+    query: ".url"

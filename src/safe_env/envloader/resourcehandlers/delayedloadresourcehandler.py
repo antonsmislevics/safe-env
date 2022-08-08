@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Dict, Any
 from .baseresourcehandlerwithtemplatedconfiguration import BaseResourceHandlerWithTemplatedConfiguration
 from ... import utils
-from . import AzureRESTResourceHandler
+from . import AzureRESTResourceHandler, AzureDevOpsPATResourceHandler
 from ...models import ResourceTemplateConfig
 from ..values import TemplatedValue
 from ..valueproviders import DictValueProvder
@@ -42,7 +42,7 @@ class DelayedLoadResourceHandler(BaseResourceHandlerWithTemplatedConfiguration):
 
 
     def on_templated_config_loaded(self):
-        expected_types = [AzureRESTResourceHandler]
+        expected_types = [AzureRESTResourceHandler, AzureDevOpsPATResourceHandler]
         resource_handler_class = utils.type_name_to_type(f"{self.resource_handler_type}ResourceHandler", expected_types)
 
         processed_params = {}

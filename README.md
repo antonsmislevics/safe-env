@@ -271,7 +271,7 @@ azure_storage_account_key:      # the name of resources template
     resource_group_name: 
     storage_account_name:
     key_index: 0
-  type: AzureREST               # currently only AzureREST resource handler is supported
+  type: AzureREST               # supported resource types are AzureREST and AzureDevOpsPAT
   inputs:                       # inputs to resource handler
     url: "/subscriptions/{PARAM: subscription_id}/resourceGroups/{PARAM: resource_group_name}/providers/Microsoft.Storage/storageAccounts/{PARAM: storage_account_name}/listKeys?api-version=2021-04-01&$expand=kerb"     # resource url
     credential: DefaultAzureCredential      # authentication DefaultAzureCredential or AzureCliCredential
