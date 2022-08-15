@@ -22,4 +22,4 @@ azure_devops_pat_index_url:
   type: AzureDevOpsPAT
   inputs:
     index_url: "{PARAM: index_url}"
-    query: ".url"
+    query: "url"

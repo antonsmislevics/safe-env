@@ -15,7 +15,7 @@ class AzureRESTResourceHandler(BaseResourceHandlerWithTemplatedConfiguration):
 
 
     def on_templated_config_loaded(self):
-        self.azure_management_scope = "https://management.core.windows.net/"
+        self.azure_management_scope = "https://management.core.windows.net/.default"
         self.azure_management_url = "https://management.azure.com"
         self.url = urllib.parse.urljoin(self.azure_management_url, self.url)
         
