@@ -8,7 +8,7 @@ from . import __app_name__, __version__
 
 app = typer.Typer()
 secrets_app = typer.Typer()
-app.add_typer(secrets_app, name="secrets")
+app.add_typer(secrets_app, name="secrets", help="Work with secrets for specified environments.")
 
 ctx = None  # type: AppContext
 
@@ -20,7 +20,12 @@ def _version_callback(value: bool) -> None:
 @app.callback()
 def main(
     verbose: bool = False,
-    config_dir: Optional[Path] = None,
+    config_dir: Optional[Path] = typer.Option(
+       "./envs",
+        "--config-dir",
+        "-c",
+        help="Path to the directory where environment configuration files are stored."
+    ),
     version: Optional[bool] = typer.Option(
        None,
         "--version",
@@ -35,7 +40,7 @@ def main(
     return
 
 
-@app.command("list")
+@app.command("list", help="List available environments.")
 def list_envs():
     ctx.load()
     table = utils.print_table(
@@ -47,7 +52,7 @@ def list_envs():
     typer.echo(table)
 
 
-@app.command("show")
+@app.command("show", help="Show aggregated configuration YAML file for specified environments.")
 def show_env(names: List[str]):
     ctx.load()
     obj = ctx.envman.load(names)
@@ -88,7 +93,7 @@ def get_env_vars_script(names: List[str],
         script = utils.print_yaml(env_variables, unset=is_unset)
     return script
 
-@app.command("activate")
+@app.command("activate", help="Activate specified environments. Without other parameters the command will only show what environment variables will be set after activation. Use additional parameters to generate env variable export script for specific platform (run \"se activate --help\" for more details).")
 def load_env(names: List[str], 
     force_reload_from_remote: Optional[bool] = typer.Option(
        None,
@@ -177,7 +182,7 @@ def load_env(names: List[str],
             f.write(script)
 
 
-@secrets_app.command("list")
+@secrets_app.command("list", help="List secrets configuration for specified environments.")
 def list_secrets(names: List[str]):
     ctx.load()
     obj = ctx.envman.load(names)
@@ -190,7 +195,7 @@ def list_secrets(names: List[str]):
     typer.echo(utils.print_yaml(remote_cached_secrets))
 
 
-@secrets_app.command("clear")
+@secrets_app.command("clear", help="Delete activated/cached secrets for specified environments.")
 def clear_cached_secrets(names: List[str]):
     ctx.load()
     # obj = man.get_env(names)

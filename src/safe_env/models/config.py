@@ -10,7 +10,7 @@ class LocalKeyringSettings(BaseModel):
 
 
 class SafeEnvConfig(BaseModel):
-    keyring: Optional[LocalKeyringSettings]
+    keyring: Optional[LocalKeyringSettings] = None
     env_nested_delimiter: Optional[str] = "."
 
 
@@ -24,10 +24,10 @@ class VaultConfig(VaultConfigNoName):
 
 
 class SecretConfigNoName(BaseModel):
-    vault: Optional[str]
-    vault_name: Optional[str]
-    keyring_service_name: Optional[str]
-    keyring_name: Optional[str]
+    vault: Optional[str] = None
+    vault_name: Optional[str] = None
+    keyring_service_name: Optional[str] = None
+    keyring_name: Optional[str] = None
     local: Optional[bool] = False
 
 
@@ -46,11 +46,11 @@ class ResourceTemplateConfig(ResourceTemplateConfigNoName):
 
 
 class ResourceConfigNoName(BaseModel):
-    template: Optional[str]
+    template: Optional[str] = None
     params: Optional[Dict[str, str]] = None
-    cache_secret: Optional[str]
-    query: Optional[str]
-    parent: Optional[str]
+    cache_secret: Optional[str] = None
+    query: Optional[str] = None
+    parent: Optional[str] = None
 
 
 class ResourceConfig(ResourceConfigNoName):
@@ -62,7 +62,7 @@ class EnvironmentConfigurationMinimal(BaseModel):
 
 
 class EnvironmentConfiguration(EnvironmentConfigurationMinimal):
-    config: Optional[SafeEnvConfig]
+    config: Optional[SafeEnvConfig] = None
     vaults: Optional[Dict[str,VaultConfigNoName]] = dict()
     secrets: Optional[Dict[str,SecretConfigNoName]] = dict()
     resources: Optional[Dict[str,ResourceConfigNoName]] = dict()
