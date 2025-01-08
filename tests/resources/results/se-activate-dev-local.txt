@@ -1,0 +1,12 @@
+a: '1'
+b: '2'
+c: '3'
+a1: '1'
+b2: '2'
+d: '4'
+http_proxy: http://http_proxy_address
+https_proxy: https://https_proxy_address
+no_proxy: no_proxy_records
+HTTP_PROXY: http://http_proxy_address
+HTTPS_PROXY: https://https_proxy_address
+NO_PROXY: no_proxy_records

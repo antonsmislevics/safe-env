@@ -1,0 +1,8 @@
+depends_on:
+  - base
+params:
+  d: 4
+envs:
+  a1: ${params.a}
+  b2: ${params.b}
+  d: ${params.d}

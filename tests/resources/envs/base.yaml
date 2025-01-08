@@ -1,0 +1,8 @@
+params:
+  a: 1
+  b: 2
+  c: 3
+envs:
+  a: ${params.a}
+  b: ${params.b}
+  c: ${params.c}

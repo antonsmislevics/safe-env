@@ -1,0 +1,6 @@
+depends_on:
+  - dev
+params:
+  d: 5
+envs:
+  d: ${params.d}

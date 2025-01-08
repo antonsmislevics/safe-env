@@ -1,0 +1,9 @@
++-------+-----------------+
+| Name  |      Path       |
++-------+-----------------+
+| base  | envs/base.yaml  |
+|  dev  |  envs/dev.yaml  |
+| dev1  | envs/dev1.yaml  |
+| dev2  | envs/dev2.yaml  |
+| local | envs/local.yaml |
++-------+-----------------+
