@@ -1,6 +1,0 @@
-depends_on:
-    - base
-parameters:
-  env_name: dev_env
-env:
-  var1: dev_var1

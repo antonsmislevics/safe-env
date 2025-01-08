@@ -1,4 +1,0 @@
-env:
-  http_proxy: "http-proxy-value"
-  https_proxy: "https-proxy-value"
-  no_proxy: "no-proxy-value"

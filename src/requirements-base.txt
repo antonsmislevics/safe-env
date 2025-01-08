@@ -1,9 +1,0 @@
-keyring
-artifacts-keyring
-azure-keyvault-secrets
-azure-identity
-pyyaml
-pydantic
-typer
-tabulate
-jmespath
