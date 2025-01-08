@@ -12,7 +12,19 @@ To achieve this, safe-env follows a set of principles:
 
 # Getting started
 ## How to install?
-The package is still in active development and can be installed directly from git repository.
+The package is still in active development and can be installed directly from git repository:
+```bash
+python -m pip install git+https://github.com/antonsmislevics/safe-env.git
+```
+
+If using uv, it can be installed globally as a tool or as a dev dependency in specific project:
+```bash
+# install as a tool
+uv tool install git+https://github.com/antonsmislevics/safe-env.git
+
+# add as dev dependency
+uv add --dev git+https://github.com/antonsmislevics/safe-env.git
+```
 
 The package does not require to be installed in the same environment that is used for development.
 
