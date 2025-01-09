@@ -1,3 +1,8 @@
+import subprocess
+import os
+import sys
+import shlex
+import runpy
 from typing import Optional, List
 from pathlib import Path
 import typer
@@ -190,6 +195,55 @@ def load_env(names: List[str],
     else:
         with open(out_path, 'w', encoding="utf-8") as f:
             f.write(script)
+
+@app.command("run", help="Run command (sub process) or python module with specified environments activated.")
+def run_in_env(names: List[str],
+        cmd: str = typer.Option(
+            ...,
+            "--cmd",
+            "-c",
+            help="Command to run.",
+        ),
+        run_as_python_module: Optional[bool] = typer.Option(
+            False,
+            "--python-module",
+            "-py",
+            help="Run command as python module (does not create separate process)."
+        ),
+        no_host_env_variables: Optional[bool] = typer.Option(
+            False,
+            "--no-host-envs",
+            help="Do not pass env variables from host (current terminal session)."
+        ),
+        force_reload: Optional[bool] = typer.Option(
+            False,
+            "--force-reload",
+            "-f",
+            help="Ignore all cached values and reload from sources."
+        ),
+        no_cache: Optional[bool] = typer.Option(
+            False,
+            "--no-cache",
+            "-n",
+            help="Do not use caches to load/save values."
+        )
+    ):
+    _, env_variables = _process_config(names,
+                                       resolve=True,
+                                       get_envs=True,
+                                       force_reload=force_reload,
+                                       no_cache=no_cache)
+
+    cmd_args = shlex.split(cmd)
+    if no_host_env_variables:
+        os.environ.clear()
+    os.environ.update(env_variables)
+    if run_as_python_module:
+        sys.argv = cmd_args
+        module_name = cmd_args[0]
+        runpy.run_module(module_name, run_name="__main__")
+    else:
+        subprocess.run(cmd_args, env=os.environ)
 
 if __name__ == "__main__":
     app()
