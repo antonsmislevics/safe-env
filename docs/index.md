@@ -10,3 +10,5 @@ To achieve this, safe-env follows a set of principles:
     - local keyring;
     - environment variables (in memory).
 0. Access to required resources and vaults is controlled via standard user authentication mechanisms (for example, `az login` or interactive browser login for Azure).
+
+Let's [get started](getting-started.md)!
