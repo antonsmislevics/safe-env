@@ -229,7 +229,7 @@ $ se activate dev --docker --out docker.env
 
 ### Option 4: Generate regular .env file (not recommended)
 
-Finally, you can generate `.env` file containing all values, and use it with Docker or other tools.
+Finally, you can generate regular `.env` file containing all values.
 ```bash
 # preview env file content
 $ se activate dev --env
