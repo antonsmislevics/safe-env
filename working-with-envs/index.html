@@ -390,18 +390,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-3-generate-the-file-for-use-with-docker" class="md-nav__link">
+  <a href="#option-3-generate-env-file-for-docker" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 3: Generate the file for use with Docker
+      Option 3: Generate .env file for Docker
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#option-4-generate-env-file-not-recommended" class="md-nav__link">
+  <a href="#option-4-generate-regular-env-file-not-recommended" class="md-nav__link">
     <span class="md-ellipsis">
-      Option 4: Generate .env file (not recommended)
+      Option 4: Generate regular .env file (not recommended)
     </span>
   </a>
   
@@ -624,20 +624,51 @@ set &quot;var1=dev_var1&quot;;set &quot;var2=param1_value - param2_value&quot;;s
 </div>
 </div>
 </div>
-<h3 id="option-3-generate-the-file-for-use-with-docker">Option 3: Generate the file for use with Docker</h3>
-<p>If you work with Docker, you can also generate the file that can pass these environment variables from host to container via docker compose. In combination with Option 1 or Option 2 above, this allows to deliver environment variables to Docker container, without saving them to file.
-<div class="highlight"><pre><span></span><code><span class="c1"># preview docker compose env file content</span>
+<h3 id="option-3-generate-env-file-for-docker">Option 3: Generate .env file for Docker</h3>
+<p>If you work with Docker, you have several options:</p>
+<ol>
+<li>Pass names of environment variables as command line arguments to <code>docker run</code>:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>se<span class="w"> </span>run<span class="w"> </span>dev<span class="w"> </span>--cmd<span class="w"> </span><span class="s2">&quot;docker run -it --rm -e var1 -e var2 -e var3 -e env_name python:3.10-slim-buster printenv&quot;</span>
+</code></pre></div></li>
+<li>Pass names of environment variables via .env file to <code>docker run</code>:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>se<span class="w"> </span>run<span class="w"> </span>dev<span class="w"> </span>--cmd<span class="w"> </span><span class="s2">&quot;docker run -it --rm --env-file docker.env python:3.10-slim-buster printenv&quot;</span>
+</code></pre></div></li>
+<li>Pass names of environment variables in <code>docker-compose.yaml</code>:
+<div class="highlight"><span class="filename">docker-compose.yaml</span><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">python</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python:3.10-slim-buster</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">printenv</span>
+<span class="hll"><span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var1</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var2</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">var3</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">env_name</span>
+</span></code></pre></div>
+<div class="highlight"><pre><span></span><code>se<span class="w"> </span>run<span class="w"> </span>dev<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;docker compose up&quot;</span>
+</code></pre></div></li>
+<li>Pass names of environment variables via .env file to <code>docker compose</code>:
+<div class="highlight"><span class="filename">docker-compose.yaml</span><pre><span></span><code><span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">python</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">python:3.10-slim-buster</span>
+<span class="w">    </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">printenv</span>
+<span class="hll"><span class="w">    </span><span class="nt">env_file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docker.env</span>
+</span></code></pre></div>
+<div class="highlight"><pre><span></span><code>se<span class="w"> </span>run<span class="w"> </span>dev<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;docker compose up&quot;</span>
+</code></pre></div></li>
+</ol>
+<p><strong>safe-env</strong> can automatically generate <code>docker.env</code> file mentioned above.
+<div class="highlight"><pre><span></span><code><span class="c1"># preview docker env file content</span>
 $<span class="w"> </span>se<span class="w"> </span>activate<span class="w"> </span>dev<span class="w"> </span>--docker
 
-<span class="nv">var1</span><span class="o">=</span><span class="si">${</span><span class="nv">var1</span><span class="si">}</span>
-<span class="nv">var2</span><span class="o">=</span><span class="si">${</span><span class="nv">var2</span><span class="si">}</span>
-<span class="nv">var3</span><span class="o">=</span><span class="si">${</span><span class="nv">var3</span><span class="si">}</span>
-<span class="nv">env_name</span><span class="o">=</span><span class="si">${</span><span class="nv">env_name</span><span class="si">}</span>
+var1
+var2
+var3
+env_name
 
 <span class="c1"># write to .env file</span>
-$<span class="w"> </span>se<span class="w"> </span>activate<span class="w"> </span>dev<span class="w"> </span>--docker<span class="w"> </span>--out<span class="w"> </span>docker-dev.env
+$<span class="w"> </span>se<span class="w"> </span>activate<span class="w"> </span>dev<span class="w"> </span>--docker<span class="w"> </span>--out<span class="w"> </span>docker.env
 </code></pre></div></p>
-<h3 id="option-4-generate-env-file-not-recommended">Option 4: Generate .env file (not recommended)</h3>
+<h3 id="option-4-generate-regular-env-file-not-recommended">Option 4: Generate regular .env file (not recommended)</h3>
 <p>Finally, you can generate <code>.env</code> file containing all values, and use it with Docker or other tools.
 <div class="highlight"><pre><span></span><code><span class="c1"># preview env file content</span>
 $<span class="w"> </span>se<span class="w"> </span>activate<span class="w"> </span>dev<span class="w"> </span>--env
