@@ -295,7 +295,7 @@ It is important to highlight, that all resolvers are implemented in a way that p
 
 Here is a sample configuration file showing how these resolvers work together:
 ```yaml
-# common params, that are typically overriden in nested configurations
+# common params, that are typically overridden in nested configurations
 params:
   tenant_id: <tenant-id>
   az_storage_account_name: <storage-account-name>
@@ -315,7 +315,7 @@ credentials:
         provider: ${se.cache:memory}              # use in-memory cache
         required: True
 
-# dynamically construct Azure KeyVault secret names for different envrionments
+# dynamically construct Azure KeyVault secret names for different environments
 # in this example we assume that the same KeyVault is used for all environments and different postfixes are used
 kv_key_names:
   app_client_id: APPCLIENTID${params.kv_secret_postfix}

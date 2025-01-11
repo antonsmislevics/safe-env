@@ -1,0 +1,64 @@
+site_name: Safe Environment Manager (safe-env)
+site_url: https://mydomain.org/mysite
+repo_url: https://github.com/antonsmislevics/safe-env
+theme:
+  name: material
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - json
+    - bash
+
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: light blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: light blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+  features:
+    # - navigation.tracking
+    - toc.integrate
+    # - navigation.sections
+    - content.code.copy
+    - navigation.sections
+    - navigation.indexes
+    - navigation.tracking
+    - content.tabs.link
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  
+nav:
+  - Introduction: index.md
+  - Getting started: getting-started.md
+  - Working with environments: working-with-envs.md
+  - Working with secrets: working-with-secrets.md
+  - Developing plugins: plugins.md
