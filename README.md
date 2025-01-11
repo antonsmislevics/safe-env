@@ -10,6 +10,10 @@ To achieve this, safe-env follows a set of principles:
     - environment variables (in memory).
 0. Access to required resources and vaults is controlled via standard user authentication mechanisms (for example, `az login` or interactive browser login for Azure).
 
+More info:
+- Documentation: https://antonsmislevics.github.io/safe-env
+- Repository: https://github.com/antonsmislevics/safe-env
+
 # Getting started
 ## How to install?
 The package can be installed using pip:

@@ -85,5 +85,5 @@ def print_env_content(item: Any, unset=False) -> str:
 def print_docker_env_content(item: Any, unset=False) -> str:
     # TODO: unset is not used currently
     item_dict = obj_to_dict(item)
-    script_parts = [f"{key}=${{{key}}}" for (key, value) in item_dict.items()]
+    script_parts = [f"{key}" for (key, value) in item_dict.items()]
     return "\n".join(script_parts)

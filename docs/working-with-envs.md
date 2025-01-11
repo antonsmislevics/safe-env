@@ -174,23 +174,60 @@ Second, we can call `se activate` passing a type of a shell as additional parame
     # copy/paste to execute the script manually
     ```
 
-### Option 3: Generate the file for use with Docker
+### Option 3: Generate .env file for Docker
 
-If you work with Docker, you can also generate the file that can pass these environment variables from host to container via docker compose. In combination with Option 1 or Option 2 above, this allows to deliver environment variables to Docker container, without saving them to file.
-```bash
-# preview docker compose env file content
-$ se activate dev --docker
+If you work with Docker, you have several options:
 
-var1=${var1}
-var2=${var2}
-var3=${var3}
-env_name=${env_name}
-
-# write to .env file
-$ se activate dev --docker --out docker-dev.env
+1. Pass names of environment variables as command line arguments to `docker run`:
+``` bash
+$ se run dev --cmd "docker run -it --rm -e var1 -e var2 -e var3 -e env_name python:3.10-slim-buster printenv"
+```
+2. Pass names of environment variables via .env file to `docker run`:
+``` bash
+$ se run dev --cmd "docker run -it --rm --env-file docker.env python:3.10-slim-buster printenv"
+```
+3. Pass names of environment variables in `docker-compose.yaml`:
+``` yaml title="docker-compose.yaml" hl_lines="5-9"
+services:
+  python:
+    image: python:3.10-slim-buster
+    command: printenv
+    environment:
+      - var1
+      - var2
+      - var3
+      - env_name
+```
+``` bash
+se run dev -c "docker compose up"
+```
+4. Pass names of environment variables via .env file to `docker compose`:
+``` yaml title="docker-compose.yaml" hl_lines="5"
+services:
+  python:
+    image: python:3.10-slim-buster
+    command: printenv
+    env_file: docker.env
+```
+``` bash
+se run dev -c "docker compose up"
 ```
 
-### Option 4: Generate .env file (not recommended)
+**safe-env** can automatically generate `docker.env` file mentioned above.
+```bash
+# preview docker env file content
+$ se activate dev --docker
+
+var1
+var2
+var3
+env_name
+
+# write to .env file
+$ se activate dev --docker --out docker.env
+```
+
+### Option 4: Generate regular .env file (not recommended)
 
 Finally, you can generate `.env` file containing all values, and use it with Docker or other tools.
 ```bash
