@@ -1,0 +1,8 @@
+/* Omits the nav title unless on a small screen, in which case
+the nav title is needed for backwards navigation in the collapsible
+nav variant. */
+@media screen and (min-width: 76.25em) {
+    .md-nav__title {
+      display: none;
+    }
+  }

@@ -1,0 +1,1011 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://antonsmislevics.github.io/safe-env/working-with-secrets/">
+      
+      
+        <link rel="prev" href="../working-with-envs/">
+      
+      
+        <link rel="next" href="../plugins/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Working with secrets - Safe Environment Manager (safe-env)</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#working-with-secrets" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Safe Environment Manager (safe-env)" class="md-header__button md-logo" aria-label="Safe Environment Manager (safe-env)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Safe Environment Manager (safe-env)
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Working with secrets
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="light-blue" data-md-color-accent="light-blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="light-blue" data-md-color-accent="light-blue"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/antonsmislevics/safe-env" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Safe Environment Manager (safe-env)" class="md-nav__button md-logo" aria-label="Safe Environment Manager (safe-env)" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Safe Environment Manager (safe-env)
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/antonsmislevics/safe-env" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Getting started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../working-with-envs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Working with environments
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Working with secrets
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Working with secrets
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-secrets" class="md-nav__link">
+    <span class="md-ellipsis">
+      Loading secrets
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#caching" class="md-nav__link">
+    <span class="md-ellipsis">
+      Caching
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication" class="md-nav__link">
+    <span class="md-ellipsis">
+      Authentication
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../plugins/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Developing plugins
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="working-with-secrets">Working with secrets</h1>
+<p>In this section we cover how to efficiently handle secrets in environment configuration files using <strong>safe-env</strong>.</p>
+<h2 id="overview">Overview</h2>
+<p>A set of custom OmegaConf resolvers is included to work with secrets in a secure way:</p>
+<ul>
+<li><code>se.call</code> - allows to invoke any Python callable </li>
+<li><code>se.auth</code> - shortcut to invoke classes generating credentials for authentication to various sources</li>
+<li><code>se.cache</code> - shortcut to invoke classes providing caching capabilities</li>
+</ul>
+<p>It is important to highlight, that all resolvers are implemented in a way that parent config element is used as a container that stores configurations on how callable will be invoked.</p>
+<p>Here is a sample configuration file showing how these resolvers work together:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span>
+<span class="normal">46</span>
+<span class="normal">47</span>
+<span class="normal">48</span>
+<span class="normal">49</span>
+<span class="normal">50</span>
+<span class="normal">51</span>
+<span class="normal">52</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># common params, that are typically overridden in nested configurations</span>
+<span class="nt">params</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tenant_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;tenant-id&gt;</span>
+<span class="w">  </span><span class="nt">az_storage_account_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;storage-account-name&gt;</span>
+<span class="w">  </span><span class="nt">kv_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://&lt;keyvaylt-name&gt;.vault.azure.net/</span>
+<span class="w">  </span><span class="nt">kv_secret_postfix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEV</span>
+<span class="w">  </span><span class="nt">keyring_postfix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+
+<span class="c1"># retrieve credentials required for authentication</span>
+<span class="nt">credentials</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">azure_identity</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.auth:azure.interactive}</span><span class="w">           </span><span class="c1"># use azure interactive login</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">tenant_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.tenant_id}</span>
+<span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w">                                        </span><span class="c1"># cache credentials, so we don&#39;t need to login multiple times</span>
+<span class="w">      </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure_credential</span><span class="w">                    </span><span class="c1"># key to be used when storing object in memory</span>
+<span class="w">        </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:memory}</span><span class="w">              </span><span class="c1"># use in-memory cache</span>
+<span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># dynamically construct Azure KeyVault secret names for different environments</span>
+<span class="c1"># in this example we assume that the same KeyVault is used for all environments and different postfixes are used</span>
+<span class="nt">kv_key_names</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app_client_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APPCLIENTID${params.kv_secret_postfix}</span>
+<span class="w">  </span><span class="nt">app_client_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APPCLIENTSECRET${params.kv_secret_postfix}</span>
+
+<span class="c1"># retrieve secret from Azure KeyVault</span>
+<span class="nt">kv_secrets</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.call:get_azure_key_vault_secrets}</span><span class="w">     </span><span class="c1"># here we use a registered/known shortcut name for secrets resolver, </span>
+<span class="w">                                                    </span><span class="c1"># but we could also use the full name of the callable instead</span>
+<span class="w">  </span><span class="nt">as_container</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">                                </span><span class="c1"># convert returned result to OmegaConf container</span>
+<span class="w">  </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.kv_url}</span>
+<span class="w">    </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${credentials.azure_identity.value}</span><span class="w"> </span><span class="c1"># use credentials for authentication</span>
+<span class="w">    </span><span class="nt">names</span><span class="p">:</span><span class="w">                                          </span><span class="c1"># names of secrets to retrieve from KeyVault</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AZSTORAGEACCOUNTKEY</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_id}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_secret}</span>
+<span class="w">  </span><span class="nt">cache</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">local_keyring</span><span class="p">:</span><span class="w">                                  </span><span class="c1"># cache secrets locally, so we don&#39;t need to go to KeyVault every time</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kv_secrets_${params.keyring_postfix}</span><span class="w">    </span><span class="c1"># secret name in the cache</span>
+<span class="w">      </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:keyring}</span><span class="w">                 </span><span class="c1"># use local keyring as a cache</span>
+<span class="w">      </span><span class="nt">init_params</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_app_secrets</span><span class="w">              </span><span class="c1"># service name in the cache</span>
+
+<span class="c1"># construct final environment variables</span>
+<span class="nt">envs</span><span class="p">:</span><span class="w">                                               </span>
+<span class="w">  </span><span class="nt">AZ_ACCOUNT_NAME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.az_storage_account_name}</span>
+<span class="w">  </span><span class="nt">AZ_ACCOUNT_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_secrets.value.AZSTORAGEACCOUNTKEY}</span>
+<span class="w">  </span><span class="nt">APP_CLIENT_ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_secrets.value.${kv_key_names.app_client_id}}</span>
+<span class="w">  </span><span class="nt">APP_CLIENT_SECRET</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_secrets.value.${kv_key_names.app_client_secret}}</span>
+</code></pre></div></td></tr></table></div></p>
+<p>Running <code>se resolve</code> shows how this configuration will be resolved with values:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nt">params</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">tenant_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;tenant-id&gt;</span>
+<span class="w">  </span><span class="nt">az_storage_account_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;storage-account-name&gt;</span>
+<span class="w">  </span><span class="nt">kv_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://&lt;keyvaylt-name&gt;.vault.azure.net/</span>
+<span class="w">  </span><span class="nt">kv_secret_postfix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">DEV</span>
+<span class="w">  </span><span class="nt">keyring_postfix</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dev</span>
+<span class="nt">credentials</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">azure_identity</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="kt">!&lt;object&gt;</span><span class="w"> </span><span class="s">&#39;safe_env.resolvers.delayedcallable.DelayedCallable&#39;</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">tenant_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;tenant-id&gt;</span>
+<span class="w">    </span><span class="nt">cache</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure_credential</span>
+<span class="w">        </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="kt">!!python/name:safe_env.cache_providers.memory_cache.MemoryCache</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">kv_key_names</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app_client_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APPCLIENTIDDEV</span>
+<span class="w">  </span><span class="nt">app_client_secret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APPCLIENTSECRETDEV</span>
+<span class="nt">kv_secrets</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">AZSTORAGEACCOUNTKEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;storage-account-key&gt;</span>
+<span class="w">    </span><span class="nt">APPCLIENTIDDEV</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;app-client-id&gt;</span>
+<span class="w">    </span><span class="nt">APPCLIENTSECRETDEV</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;app-client-secret&gt;</span>
+<span class="w">  </span><span class="nt">as_container</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://&lt;keyvaylt-name&gt;.vault.azure.net/</span>
+<span class="w">    </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="kt">!&lt;object&gt;</span><span class="w"> </span><span class="s">&#39;safe_env.resolvers.delayedcallable.DelayedCallable&#39;</span>
+<span class="w">    </span><span class="nt">names</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AZSTORAGEACCOUNTKEY</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APPCLIENTIDDEV</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">APPCLIENTSECRETDEV</span>
+<span class="w">  </span><span class="nt">cache</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">local_keyring</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kv_secrets_dev</span>
+<span class="w">      </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="kt">!!python/name:safe_env.cache_providers.keyring_cache.KeyringCache</span><span class="w"> </span><span class="s">&#39;&#39;</span>
+<span class="w">      </span><span class="nt">init_params</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_app_secrets</span>
+<span class="nt">envs</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">AZ_ACCOUNT_NAME</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;storage-account-name&gt;</span>
+<span class="w">  </span><span class="nt">AZ_ACCOUNT_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;storage-account-key&gt;</span>
+<span class="w">  </span><span class="nt">APP_CLIENT_ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;app-client-id&gt;</span>
+<span class="w">  </span><span class="nt">APP_CLIENT_SECRET</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;app-client-secret&gt;</span>
+</code></pre></div></td></tr></table></div></p>
+<h2 id="loading-secrets">Loading secrets</h2>
+<p>Depending on project specifics, secrets may need to be loaded from different sources. For example, if the project is relying on Microsoft Azure cloud infrastructure, secrets may be loaded from Azure KeyVault or directly from Azure resources (for example, access keys to specific resources). <strong>Safe-env</strong> supports such scenarios by allowing to invoke arbitrary python code, what gives unlimited integration possibilities.</p>
+<p>To invoke custom code from configuration file, <code>se.call</code> resolver should be used:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># retrieve secret from Azure KeyVault</span>
+<span class="nt">kv_secrets</span><span class="p">:</span>
+<span class="hll"><span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.call:get_azure_key_vault_secrets}</span><span class="w">     </span><span class="c1"># here we use a registered/known shortcut name for secrets resolver, </span>
+</span><span class="w">                                                    </span><span class="c1"># but we could also use the full name of the callable instead</span>
+<span class="w">  </span><span class="nt">as_container</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">                                </span><span class="c1"># convert returned result to OmegaConf container</span>
+<span class="w">  </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.kv_url}</span>
+<span class="w">    </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${credentials.azure_identity.value}</span><span class="w"> </span><span class="c1"># use credentials for authentication</span>
+<span class="w">    </span><span class="nt">names</span><span class="p">:</span><span class="w">                                          </span><span class="c1"># names of secrets to retrieve from KeyVault</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AZSTORAGEACCOUNTKEY</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_id}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_secret}</span>
+<span class="w">  </span><span class="nt">cache</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">local_keyring</span><span class="p">:</span><span class="w">                                  </span><span class="c1"># cache secrets locally, so we don&#39;t need to go to KeyVault every time</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kv_secrets_${params.keyring_postfix}</span><span class="w">    </span><span class="c1"># secret name in the cache</span>
+<span class="w">      </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:keyring}</span><span class="w">                 </span><span class="c1"># use local keyring as a cache</span>
+<span class="w">      </span><span class="nt">init_params</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_app_secrets</span><span class="w">              </span><span class="c1"># service name in the cache</span>
+</code></pre></div></td></tr></table></div>
+<p>As argument <code>se.call</code> expects full name of a callable, or registered "known" shortcut name. In this case, <code>get_azure_key_vault_secrets</code> is known shortcut name for <code>safe_env.resolvers.callables_azure.get_azure_key_vault_secrets</code>:
+<div class="highlight"><span class="filename">./src/safe_env/resolvers/callables_azure.py</span><pre><span></span><code><span class="k">def</span> <span class="nf">get_azure_key_vault_secrets</span><span class="p">(</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">credential</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+  <span class="c1"># ...</span>
+</code></pre></div></p>
+<p><strong>safe-env</strong> comes with a set of "known" shortcut names, which are registered via:</p>
+<p><div class="highlight"><span class="filename">./src/safe_env/resolvers/callables.py</span><pre><span></span><code><span class="c1"># ...</span>
+<span class="n">KNOWN_CALLABLES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;get_azure_key_vault_secrets&quot;</span><span class="p">:</span> <span class="n">get_azure_key_vault_secrets</span><span class="p">,</span>
+    <span class="s2">&quot;get_keyring_secrets&quot;</span><span class="p">:</span> <span class="n">get_keyring_secrets</span><span class="p">,</span>
+    <span class="s2">&quot;get_azure_rest_resource&quot;</span><span class="p">:</span> <span class="n">get_azure_rest_resource</span><span class="p">,</span>
+    <span class="s2">&quot;get_azure_devops_pat&quot;</span><span class="p">:</span> <span class="n">get_azure_devops_pat</span>
+<span class="p">}</span>
+<span class="c1"># ...</span>
+</code></pre></div>
+Usually, a callable expects that specific arguments are provided during invocation. For example, <code>get_azure_key_vault_secrets</code> expects that three arguments are provided: url, credential and names of secrets. <code>se.call</code> allows to provide these arguments via <code>args</code> and <code>kwargs</code> attributes under the same parent in configuration file:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># retrieve secret from Azure KeyVault</span>
+<span class="nt">kv_secrets</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.call:get_azure_key_vault_secrets}</span><span class="w">     </span><span class="c1"># here we use a registered/known shortcut name for secrets resolver, </span>
+<span class="w">                                                    </span><span class="c1"># but we could also use the full name of the callable instead</span>
+<span class="w">  </span><span class="nt">as_container</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">                                </span><span class="c1"># convert returned result to OmegaConf container</span>
+<span class="hll"><span class="w">  </span><span class="nt">kwargs</span><span class="p">:</span>
+</span><span class="hll"><span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.kv_url}</span>
+</span><span class="hll"><span class="w">    </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${credentials.azure_identity.value}</span><span class="w"> </span><span class="c1"># use credentials for authentication</span>
+</span><span class="hll"><span class="w">    </span><span class="nt">names</span><span class="p">:</span><span class="w">                                          </span><span class="c1"># names of secrets to retrieve from KeyVault</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AZSTORAGEACCOUNTKEY</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_id}</span>
+</span><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_secret}</span>
+</span><span class="w">  </span><span class="nt">cache</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">local_keyring</span><span class="p">:</span><span class="w">                                  </span><span class="c1"># cache secrets locally, so we don&#39;t need to go to KeyVault every time</span>
+<span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kv_secrets_${params.keyring_postfix}</span><span class="w">    </span><span class="c1"># secret name in the cache</span>
+<span class="w">      </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:keyring}</span><span class="w">                 </span><span class="c1"># use local keyring as a cache</span>
+<span class="w">      </span><span class="nt">init_params</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_app_secrets</span><span class="w">              </span><span class="c1"># service name in the cache</span>
+</code></pre></div></td></tr></table></div></p>
+<p>This callable will return a dictionary with names/values for each secret name. However, this dictionary is not a valid OmegaConf container. <code>as_container: True</code> attribute tells <code>se.call</code> that we want to convert returned object to a valid container. This allows us to use values from it as:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">AZ_ACCOUNT_KEY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_secrets.value.AZSTORAGEACCOUNTKEY}</span>
+</code></pre></div>
+Alternatively, if not all values returned by the callable are required, it is possible to apply <a href="https://jmespath.org">JMESPath expression</a> on returned value, via <code>selector</code> attribute:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.call:some_method}</span>
+<span class="hll"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;&lt;JMESPath</span><span class="nv"> </span><span class="s">expression</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">apply</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">returned</span><span class="nv"> </span><span class="s">value&gt;&quot;</span>
+</span><span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></p>
+<p>Finally, in more complex scenarios, we may want <code>se.call</code> to initialize an instance of the class first, and then invoke specific method from this class. This can be achieved by using the following attributes:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.call:&lt;full name of the class&gt;}</span><span class="w">  </span><span class="c1"># full name of the class as a callable passed to se.call</span>
+<span class="w">  </span><span class="nt">init_params</span><span class="p">:</span><span class="w">    </span><span class="c1"># parameters passed to constructor</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w">         </span><span class="c1"># list of args for constructor</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span><span class="w">       </span><span class="c1"># dictionary with kwargs for constructor</span>
+<span class="w">  </span><span class="nt">method</span><span class="p">:</span><span class="w">         </span><span class="c1"># name of the method to invoke from class instance</span>
+<span class="w">  </span><span class="nt">args</span><span class="p">:</span><span class="w">           </span><span class="c1"># list of args for method</span>
+<span class="w">  </span><span class="nt">kwargs</span><span class="p">:</span><span class="w">         </span><span class="c1"># dictionary with kwargs for method</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></p>
+<h2 id="caching">Caching</h2>
+<p>Typically, secrets do not change every day. That's why, to improve developer experience, it may be good to cache them in a secure local storage. Good common choice is to use local keyring - the same storage, that operating system uses to store user secrets.</p>
+<p><strong>safe-env</strong> allows to cache retrieved secrets via <code>cache</code> attribute:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span>
+<span class="normal">32</span>
+<span class="normal">33</span>
+<span class="normal">34</span>
+<span class="normal">35</span>
+<span class="normal">36</span>
+<span class="normal">37</span>
+<span class="normal">38</span>
+<span class="normal">39</span>
+<span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
+<span class="normal">43</span>
+<span class="normal">44</span>
+<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># retrieve secret from Azure KeyVault</span>
+<span class="nt">kv_secrets</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.call:get_azure_key_vault_secrets}</span><span class="w">     </span><span class="c1"># here we use a registered/known shortcut name for secrets resolver, </span>
+<span class="w">                                                    </span><span class="c1"># but we could also use the full name of the callable instead</span>
+<span class="w">  </span><span class="nt">as_container</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w">                                </span><span class="c1"># convert returned result to OmegaConf container</span>
+<span class="w">  </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.kv_url}</span>
+<span class="w">    </span><span class="nt">credential</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${credentials.azure_identity.value}</span><span class="w"> </span><span class="c1"># use credentials for authentication</span>
+<span class="w">    </span><span class="nt">names</span><span class="p">:</span><span class="w">                                          </span><span class="c1"># names of secrets to retrieve from KeyVault</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AZSTORAGEACCOUNTKEY</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_id}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${kv_key_names.app_client_secret}</span>
+<span class="hll"><span class="w">  </span><span class="nt">cache</span><span class="p">:</span>
+</span><span class="hll"><span class="w">    </span><span class="nt">local_keyring</span><span class="p">:</span><span class="w">                                  </span><span class="c1"># cache secrets locally, so we don&#39;t need to go to KeyVault every time</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">kv_secrets_${params.keyring_postfix}</span><span class="w">    </span><span class="c1"># secret name in the cache</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:keyring}</span><span class="w">                 </span><span class="c1"># use local keyring as a cache</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">init_params</span><span class="p">:</span>
+</span><span class="hll"><span class="w">        </span><span class="nt">kwargs</span><span class="p">:</span>
+</span><span class="hll"><span class="w">          </span><span class="nt">service_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">my_app_secrets</span><span class="w">              </span><span class="c1"># service name in the cache</span>
+</span></code></pre></div></td></tr></table></div></p>
+<p>The attribute allows to specify one or multiple caches as a dictionary. If multiple caches are configured, they will be treated as being ordered alphabetically by dictionary key.</p>
+<p>For each cache we must specify:</p>
+<ul>
+<li><code>name</code> - the name that will be used to store secret in the cache</li>
+<li><code>provider</code> - <code>se.cache</code> resolver with a full name of a callable, or registered "known" shortcut cache name.</li>
+</ul>
+<p>In this case, <code>keyring</code> is a known shortcut name for <code>safe_env.cache_providers.AzureKeyVaultSecretCache</code>:
+<div class="highlight"><span class="filename">./src/cache_providers/keyring_cache.py</span><pre><span></span><code><span class="c1"># ...</span>
+<span class="kn">from</span> <span class="nn">.base_cache_provider</span> <span class="kn">import</span> <span class="n">BaseCacheProvider</span>
+
+<span class="k">class</span> <span class="nc">KeyringCache</span><span class="p">(</span><span class="n">BaseCacheProvider</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyring_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">service_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyring_type</span> <span class="o">=</span> <span class="n">keyring_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_service_name</span> <span class="o">=</span> <span class="n">service_name</span>
+<span class="c1"># ...</span>
+</code></pre></div></p>
+<p><strong>safe-env</strong> comes with a set of "known" shortcut cache names, which are registered via:</p>
+<div class="highlight"><span class="filename">./src/safe_env/resolvers/cache.py</span><pre><span></span><code><span class="c1"># ...</span>
+<span class="n">KNOWN_CACHE_CLASSES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;memory&quot;</span><span class="p">:</span> <span class="n">cache_providers</span><span class="o">.</span><span class="n">MemoryCache</span><span class="p">,</span>
+    <span class="s2">&quot;keyring&quot;</span><span class="p">:</span> <span class="n">cache_providers</span><span class="o">.</span><span class="n">KeyringCache</span><span class="p">,</span>
+    <span class="s2">&quot;azure.keyvault&quot;</span><span class="p">:</span> <span class="n">cache_providers</span><span class="o">.</span><span class="n">AzureKeyVaultSecretCache</span>
+<span class="p">}</span>
+<span class="c1"># ...</span>
+</code></pre></div>
+<p>Constructor of cache provider class may expect, that specific arguments are provided. For example, <code>KeyringCache</code> expects that <code>service_name</code> is provided. Same as with <code>se:call</code> this can be done via:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">init_params</span><span class="p">:</span><span class="w">    </span><span class="c1"># parameters passed to constructor</span>
+<span class="w">    </span><span class="nt">args</span><span class="p">:</span><span class="w">         </span><span class="c1"># list of args for constructor</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span><span class="w">       </span><span class="c1"># dictionary with kwargs for constructor</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></p>
+<p><strong>safe-env</strong> comes with few commands / options that help to manage caches:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>se<span class="w"> </span>flush<span class="w">    </span><span class="c1"># Delete values stored in all caches for specified environments.</span>
+
+$<span class="w"> </span>se<span class="w"> </span><span class="o">(</span>resolve<span class="w"> </span><span class="p">|</span><span class="w"> </span>activate<span class="w"> </span><span class="p">|</span><span class="w"> </span>run<span class="o">)</span><span class="w"> </span><span class="o">(</span>--force-reload<span class="w"> </span><span class="p">|</span><span class="w"> </span>-f<span class="o">)</span><span class="w">   </span><span class="c1"># Ignore all cached values and reload from sources.</span>
+
+$<span class="w"> </span>se<span class="w"> </span><span class="o">(</span>resolve<span class="w"> </span><span class="p">|</span><span class="w"> </span>activate<span class="w"> </span><span class="p">|</span><span class="w"> </span>run<span class="o">)</span><span class="w"> </span><span class="o">(</span>--no-cache<span class="w"> </span><span class="p">|</span><span class="w"> </span>-n<span class="o">)</span><span class="w">   </span><span class="c1"># Do not use caches to load/save values.</span>
+</code></pre></div></p>
+<p>However, some caches are "technical" and should always be used - for example, in-memory cache for storing authentication credentials. To achieve this, we can mark specific cache as <code>required</code>:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">  </span><span class="c1"># retrieve credentials required for authentication</span>
+<span class="nt">credentials</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">azure_identity</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.auth:azure.interactive}</span><span class="w">           </span><span class="c1"># use azure interactive login</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">tenant_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.tenant_id}</span>
+<span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w">                                        </span><span class="c1"># cache credentials, so we don&#39;t need to login multiple times</span>
+<span class="w">      </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure_credential</span><span class="w">                    </span><span class="c1"># key to be used when storing object in memory</span>
+<span class="w">        </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:memory}</span><span class="w">              </span><span class="c1"># use in-memory cache</span>
+<span class="hll"><span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+</span></code></pre></div></td></tr></table></div></p>
+<h2 id="authentication">Authentication</h2>
+<p>Usually, retrieving secrets requires some form of authentication. For example, if secrets are stored in Azure, the user is required to authenticate via <code>az login</code> or interactive browser login.</p>
+<p><strong>safe-env</strong> allows to invoke a callable to retrieve authentication credentials via <code>se.auth</code> resolver:
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">  </span><span class="c1"># retrieve credentials required for authentication</span>
+<span class="nt">credentials</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">azure_identity</span><span class="p">:</span>
+<span class="hll"><span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.auth:azure.interactive}</span><span class="w">           </span><span class="c1"># use azure interactive login</span>
+</span><span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">tenant_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.tenant_id}</span>
+<span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w">                                        </span><span class="c1"># cache credentials, so we don&#39;t need to login multiple times</span>
+<span class="w">      </span><span class="nt">memory</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure_credential</span><span class="w">                    </span><span class="c1"># key to be used when storing object in memory</span>
+<span class="w">        </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:memory}</span><span class="w">              </span><span class="c1"># use in-memory cache</span>
+<span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+</code></pre></div></td></tr></table></div></p>
+<p>As argument <code>se.auth</code> expects a full name of a callable, or registered "known" shortcut auth provider name. In this case, <code>azure.interactive</code> is a known shortcut name for <code>azure.identity.InteractiveBrowserCredential</code>.</p>
+<p><strong>safe-env</strong> comes with a set of "known" shortcut auth provider names, which are registered via:</p>
+<div class="highlight"><span class="filename">./src/safe_env/resolvers/auth.py</span><pre><span></span><code><span class="c1"># ...</span>
+<span class="n">KNOWN_AUTH_CLASSES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;azure.default&quot;</span><span class="p">:</span> <span class="n">DefaultAzureCredential</span><span class="p">,</span>
+    <span class="s2">&quot;azure.cli&quot;</span><span class="p">:</span> <span class="n">AzureCliCredential</span><span class="p">,</span>
+    <span class="s2">&quot;azure.interactive&quot;</span><span class="p">:</span> <span class="n">InteractiveBrowserCredential</span><span class="p">,</span>
+    <span class="s2">&quot;azure.managedidentity&quot;</span><span class="p">:</span> <span class="n">ManagedIdentityCredential</span><span class="p">,</span>
+    <span class="s2">&quot;azure.devicecode&quot;</span><span class="p">:</span> <span class="n">DeviceCodeCredential</span><span class="p">,</span>
+    <span class="s2">&quot;azure.vscode&quot;</span><span class="p">:</span> <span class="n">VisualStudioCodeCredential</span><span class="p">,</span>
+    <span class="s2">&quot;azure.token&quot;</span><span class="p">:</span> <span class="n">get_azure_credential_token</span>
+<span class="p">}</span>
+<span class="c1"># ...</span>
+</code></pre></div>
+<p>Arguments to auth provider can be provided via:
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="c1"># ...</span>
+<span class="w">  </span><span class="nt">args</span><span class="p">:</span><span class="w">           </span><span class="c1"># list of args</span>
+<span class="w">  </span><span class="nt">kwargs</span><span class="p">:</span><span class="w">         </span><span class="c1"># dictionary with kwargs</span>
+<span class="w">  </span><span class="c1"># ...</span>
+</code></pre></div></p>
+<p>Since the same credentials might be used multiple times, while resolving configuration file, it is a good idea to cache them in-memory:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="w">  </span><span class="c1"># retrieve credentials required for authentication</span>
+<span class="nt">credentials</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">azure_identity</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.auth:azure.interactive}</span><span class="w">           </span><span class="c1"># use azure interactive login</span>
+<span class="w">    </span><span class="nt">kwargs</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">tenant_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${params.tenant_id}</span>
+<span class="hll"><span class="w">    </span><span class="nt">cache</span><span class="p">:</span><span class="w">                                        </span><span class="c1"># cache credentials, so we don&#39;t need to login multiple times</span>
+</span><span class="hll"><span class="w">      </span><span class="nt">memory</span><span class="p">:</span>
+</span><span class="hll"><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">azure_credential</span><span class="w">                    </span><span class="c1"># key to be used when storing object in memory</span>
+</span><span class="hll"><span class="w">        </span><span class="nt">provider</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${se.cache:memory}</span><span class="w">              </span><span class="c1"># use in-memory cache</span>
+</span><span class="hll"><span class="w">        </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+</span></code></pre></div></td></tr></table></div>
+<div class="admonition info">
+<p class="admonition-title">Interesting Fact</p>
+<p>Technically <code>se.auth</code> is not a regular callable, but <code>safe_env.resolvers.delayedcallable.DelayedCallable</code>. It is invoked only when authentication credentials are really needed. For example, if secrets can be retrieved from the cache, <code>se.auth</code> will not ask the user for authentication credentials.</p>
+</div>
+<p><b>Congratulations!</b> Now you know all moving parts, and are ready to integrate <strong>safe-env</strong> with custom secret sources, authentication providers, or caches by <a href="../plugins/">implementing plugins</a>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["toc.integrate", "content.code.copy", "navigation.sections", "navigation.indexes", "navigation.tracking", "content.tabs.link"], "search": "../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>
