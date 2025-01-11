@@ -20,6 +20,10 @@ dependencies = [
     "typer>=0.14.0",
 ]
 
+[project.urls]
+Documentation = "https://antonsmislevics.github.io/safe-env"
+Repository = "https://github.com/antonsmislevics/safe-env.git"
+
 [project.scripts]
 se = "safe_env.cli:app"
 

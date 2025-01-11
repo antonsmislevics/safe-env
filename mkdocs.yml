@@ -1,13 +1,8 @@
 site_name: Safe Environment Manager (safe-env)
-site_url: https://mydomain.org/mysite
+site_url: https://antonsmislevics.github.io/safe-env
 repo_url: https://github.com/antonsmislevics/safe-env
 theme:
   name: material
-  highlightjs: true
-  hljs_languages:
-    - yaml
-    - json
-    - bash
 
   palette:
     # Palette toggle for automatic mode
