@@ -9,6 +9,9 @@ from .resolvers import (
     CallResolverParams,
     CacheProviderParams
 )
+from .resolver_results import (
+    AzureKeyVaultCertificate
+)
 
 __all__ = [
     "EnvironmentInfo",
@@ -17,5 +20,6 @@ __all__ = [
     "MethodParams",
     "CallResolverParams",
     "CacheProviderParams",
-    "ResolverConfiguration"
+    "ResolverConfiguration",
+    "AzureKeyVaultCertificate"
 ]

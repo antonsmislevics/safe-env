@@ -1,5 +1,6 @@
 from .callables_azure import (
     get_azure_key_vault_secrets,
+    get_azure_key_vault_certificates,
     get_azure_rest_resource
 )
 from .callables_azuredevops import (
@@ -11,6 +12,7 @@ from .callables_keyring import (
 
 KNOWN_CALLABLES = {
     "get_azure_key_vault_secrets": get_azure_key_vault_secrets,
+    "get_azure_key_vault_certificates": get_azure_key_vault_certificates,
     "get_keyring_secrets": get_keyring_secrets,
     "get_azure_rest_resource": get_azure_rest_resource,
     "get_azure_devops_pat": get_azure_devops_pat

@@ -60,6 +60,20 @@ wheels = [
 ]
 
 [[package]]
+name = "azure-keyvault-certificates"
+version = "4.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "azure-core" },
+    { name = "isodate" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d7/d0/b0a60e0f6435d3aa08583a11de98a5a98f5b99539de5e6d852343dff8a62/azure_keyvault_certificates-4.9.0.tar.gz", hash = "sha256:9dd04f8ffe4091588282eb75480bb31e584dd9940d09f9dea67fac8363e97e59", size = 152006 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4a/05/7603c9e22ce57e6243582f56a359279ed17543300107746034d8cbf8aa96/azure_keyvault_certificates-4.9.0-py3-none-any.whl", hash = "sha256:f1610a9228ce28c8a30ce04b54ee25c3838de13fd5d252effe0dad7fd561980f", size = 118304 },
+]
+
+[[package]]
 name = "azure-keyvault-secrets"
 version = "4.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1047,11 +1061,12 @@ wheels = [
 
 [[package]]
 name = "safe-env"
-version = "0.1.1.post1"
+version = "0.1.2"
 source = { editable = "." }
 dependencies = [
     { name = "artifacts-keyring" },
     { name = "azure-identity" },
+    { name = "azure-keyvault-certificates" },
     { name = "azure-keyvault-secrets" },
     { name = "jmespath" },
     { name = "keyring" },
@@ -1073,6 +1088,7 @@ dev = [
 requires-dist = [
     { name = "artifacts-keyring", specifier = ">=0.4.0" },
     { name = "azure-identity", specifier = ">=1.19.0" },
+    { name = "azure-keyvault-certificates", specifier = ">=4.9.0" },
     { name = "azure-keyvault-secrets", specifier = ">=4.9.0" },
     { name = "jmespath", specifier = ">=1.0.1" },
     { name = "keyring", specifier = ">=25.5.0" },

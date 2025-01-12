@@ -29,16 +29,12 @@ class EnvironmentManager():
         self.plugins_module = None
         self.resolver_manager = None
 
-
-        # self.resource_template_list = []    # type: List[ResourceTemplateConfig]
-
-
     def load_from_folder(self, config_dir: Path):
         if not(config_dir.exists()):
             raise Exception(f"Config directory '{config_dir}' cannot be found.")
         
-        for f in config_dir.glob("*.yaml"):
-            self.add(f)
+        for f in config_dir.glob("**/*.yaml"):
+            self.add(f, config_dir)
 
     def load_plugins(self, plugins_dir: Path):
         if not(plugins_dir.exists()):
@@ -63,10 +59,18 @@ class EnvironmentManager():
         )
         self.resolver_manager.register_resolvers()
 
-    def add(self, path: Path):
+    def _normalize_env_or_dependency_name(self, name: str):
+        # ensure that env and dependency names have consistent "/" on windows and linux
+        return name.replace("\\", "/")
+
+    def add(self, path: Path, config_dir: Path):
+        env_file_name = os.path.relpath(path, config_dir)
+        env_name = os.path.splitext(env_file_name)[0]
+        env_name = self._normalize_env_or_dependency_name(env_name)
+
         env = EnvironmentInfo(
             path=path,
-            name = os.path.splitext(path.name)[0]
+            name = env_name
         )
         self.env_info_list.append(env)
 
@@ -146,48 +150,42 @@ class EnvironmentManager():
         result = {name: str(value) for name, value in obj.envs.items()}
         return result
 
-    # def get_env_variables_and_secrets(self,
-    #                                   config: EnvironmentConfiguration,
-    #                                   force_reload_from_remote: bool = False,
-    #                                   force_reload_secrets: bool = False,
-    #                                   force_reload_resources: bool = False,
-    #                                   do_not_cache_resources: bool = False,
-    #                                   do_not_cache_secrets: bool = False) -> Dict[str,str]:
-    #     loader = EnvironmentLoader(config,
-    #                                get_resource_template_delegate=self.get_resource_template,
-    #                                force_reload_from_remote=force_reload_from_remote,
-    #                                force_reload_secrets=force_reload_secrets,
-    #                                force_reload_resources=force_reload_resources,
-    #                                do_not_cache_resources=do_not_cache_resources,
-    #                                do_not_cache_secrets=do_not_cache_secrets)
-    #     return loader.load_envs_and_secrets()
-
+    def get_target_env_name_from_dependency(self, env_name: str, dep_name: str):
+        dep_name = self._normalize_env_or_dependency_name(dep_name)
+        if dep_name.startswith("/"):
+            # treat as dependency name starting from root of config folder
+            return dep_name[1:]
+        else:
+            # resolves relative dependency names with ".." or subfolder names
+            env_dir_name = os.path.dirname(env_name)
+            target_env_name = os.path.join(env_dir_name, dep_name)
+            # remove ".." to get proper env_name
+            target_env_name = os.path.normpath(target_env_name)
+            target_env_name = self._normalize_env_or_dependency_name(target_env_name)
+            return target_env_name
 
     def get_env_chain(self, name: str, current_chain: List[str] = None) -> List[str]:
         chain = [] if current_chain is None else current_chain
-        if name not in chain:
-            env = self._load_env_yaml(name, EnvironmentConfigurationMinimal)    # type: EnvironmentConfigurationMinimal
-            if env.depends_on:
-                for dep_name in env.depends_on:
-                    chain = self.get_env_chain(dep_name, chain)
-            chain.append(name)
+        if name in chain:
+            raise Exception(f"Potential dependency loop detected. Environment name is already in dependency chain: '{name}'.")
+        # to catch potential dependency loops with self, add name to the chain first
+        chain.append(name)
+        env = self._load_env_yaml(name, EnvironmentConfigurationMinimal)    # type: EnvironmentConfigurationMinimal
+        if env.depends_on:
+            for dep_name in env.depends_on:
+                target_env_name = self.get_target_env_name_from_dependency(name, dep_name)
+                chain = self.get_env_chain(target_env_name, chain)
         return chain
 
 
     def get_env_list_chain(self, names: List[str]):
         chain = []
-        for name in names:
+        # start from last envrionment (the one that should be on top)
+        for name in reversed(names):
             chain = self.get_env_chain(name, chain)
+        # reverse the list so environments are in the sequence, in which they need to be applied
+        chain = list(reversed(chain))
         return chain
-
-
-    # def _merge_dict(self, d1, d2):
-    #     for k in d2:
-    #         if k in d1 and isinstance(d1[k], dict) and isinstance(d2[k], dict):
-    #             self._merge_dict(d1[k], d2[k])
-    #         else:
-    #             d1[k] = d2[k]
-
 
     def get_merged_config(self, names: List[str]) -> Union[ListConfig, DictConfig]:
         configs_to_merge = []
