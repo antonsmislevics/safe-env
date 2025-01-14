@@ -117,7 +117,7 @@ envs:
 
 ## Loading secrets
 
-Depending on project specifics, secrets may need to be loaded from different sources. For example, if the project is relying on Microsoft Azure cloud infrastructure, secrets may be loaded from Azure KeyVault or directly from Azure resources (for example, access keys to specific resources). **Safe-env** supports such scenarios by allowing to invoke arbitrary python code, what gives unlimited integration possibilities.
+Depending on project specifics, secrets may need to be loaded from different sources. For example, if the project is relying on Microsoft Azure cloud infrastructure, secrets may be loaded from Azure KeyVault or directly from Azure resources (for example, access keys to specific resources). **safe-env** supports such scenarios by allowing to invoke arbitrary python code, what gives unlimited integration possibilities.
 
 To invoke custom code from configuration file, `se.call` resolver should be used:
 
