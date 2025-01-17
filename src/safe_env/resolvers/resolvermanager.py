@@ -8,7 +8,7 @@ from .cache import KNOWN_CACHE_CLASSES
 import logging
 from operator import attrgetter
 from importlib import import_module
-from typing import Union, Callable, Tuple, Any
+from typing import Union, Callable, Tuple, Any, List
 from collections import OrderedDict
 from omegaconf.resolvers import oc
 import jmespath
@@ -26,12 +26,16 @@ class ResolverManager():
                  plugins_module,
                  force_reload: bool=False,
                  no_cache: bool=False,
-                 flush_caches: bool=False):
+                 flush_caches: bool=False,
+                 disable_unregistered_callables: bool = False,
+                 load_known_callables_from_modules: List[str] = None):
         self.plugins_module_name = plugins_module_name
         self.plugins_module = plugins_module
         self.force_reload = force_reload
         self.no_cache = no_cache
         self.flush_caches = flush_caches
+        self.disable_unregistered_callables = disable_unregistered_callables
+        self.load_known_callables_from_modules = load_known_callables_from_modules
 
         self.builtin_resolvers = [
             ResolverConfiguration(
@@ -61,6 +65,18 @@ class ResolverManager():
         self.known_cache_classes = dict()
         self.known_auth_classes = dict()
 
+    def _get_custom_modules_to_load_known_callables(self):
+        custom_modules = []
+        if self.plugins_module is not None:
+            # plugins module is registered
+            custom_modules.append(self.plugins_module)
+        
+        if self.load_known_callables_from_modules is not None:
+            # names of additional modules were passed as parameter
+            for module_name in self.load_known_callables_from_modules:
+                custom_modules.append(self._get_module_by_name(module_name))
+        return custom_modules
+
     def register_resolvers(self):
         self.known_resolvers = self.builtin_resolvers.copy()
         self.known_callables = KNOWN_CALLABLES.copy()
@@ -68,22 +84,22 @@ class ResolverManager():
         self.known_auth_classes = KNOWN_AUTH_CLASSES.copy()
 
         custom_resolvers = []
-        if self.plugins_module is not None:
-            # plugins module is registered
-            if hasattr(self.plugins_module, "CUSTOM_RESOLVERS"):
-                custom_resolvers = getattr(self.plugins_module, "CUSTOM_RESOLVERS")
+        custom_modules = self._get_custom_modules_to_load_known_callables()
+        for module in custom_modules:
+            if hasattr(module, "CUSTOM_RESOLVERS"):
+                custom_resolvers = getattr(module, "CUSTOM_RESOLVERS")
                 self.known_resolvers += custom_resolvers
 
-            if hasattr(self.plugins_module, "CUSTOM_CALLABLES"):
-                custom_callables = getattr(self.plugins_module, "CUSTOM_CALLABLES")
+            if hasattr(module, "CUSTOM_CALLABLES"):
+                custom_callables = getattr(module, "CUSTOM_CALLABLES")
                 self.known_callables.update(custom_callables)
             
-            if hasattr(self.plugins_module, "CUSTOM_CACHE_CLASSES"):
-                custom_cache_classes = getattr(self.plugins_module, "CUSTOM_CACHE_CLASSES")
+            if hasattr(module, "CUSTOM_CACHE_CLASSES"):
+                custom_cache_classes = getattr(module, "CUSTOM_CACHE_CLASSES")
                 self.known_cache_classes.update(custom_cache_classes)
 
-            if hasattr(self.plugins_module, "CUSTOM_AUTH_CLASSES"):
-                custom_auth_classes = getattr(self.plugins_module, "CUSTOM_AUTH_CLASSES")
+            if hasattr(module, "CUSTOM_AUTH_CLASSES"):
+                custom_auth_classes = getattr(module, "CUSTOM_AUTH_CLASSES")
                 self.known_auth_classes.update(custom_auth_classes)
             
         for resolver_config in self.known_resolvers:
@@ -123,7 +139,14 @@ class ResolverManager():
         known_callable = self.known_callables.get(class_name_str.lower())
         if known_callable is not None:
             return known_callable
+        
+        if self.disable_unregistered_callables:
+            raise Exception(f"There is no known callable '{class_name_str.lower()}'. Unregistered callables are disabled.")
 
+        return self._get_callable_from_module_by_name(class_name_str)
+
+
+    def _get_callable_from_module_by_name(self, class_name_str: str):
         try:
             module_name, class_path = class_name_str.split('.', 1)
             if module_name == self.plugins_module_name:
@@ -137,10 +160,14 @@ class ResolverManager():
             else:
                 # load callable from installed library by importing submodule
                 module_path, class_name = class_name_str.rsplit('.', 1)
-                module = import_module(module_path)
+                module = self._get_module_by_name(module_path)
                 return getattr(module, class_name)    
         except (ImportError, AttributeError) as e:
             raise ImportError(class_name_str, e)
+
+    def _get_module_by_name(self, name: str):
+        module = import_module(name)
+        return module
 
     def _load_delayed_param(self, obj):
         if isinstance(obj, DelayedCallable):

@@ -19,9 +19,15 @@ from . import resolvers
 
 
 class EnvironmentManager():
-    def __init__(self):
+    def __init__(self,
+                 disable_plugins: bool = False,
+                 disable_unregistered_callables: bool = False,
+                 load_known_callables_from_modules: List[str] = None):
         self.plugins_module_name = "_plugins_"
         self.resolver_manager = None
+        self.disable_plugins = disable_plugins
+        self.disable_unregistered_callables = disable_unregistered_callables
+        self.load_known_callables_from_modules = load_known_callables_from_modules
         self.reload()
 
     def reload(self):
@@ -37,6 +43,10 @@ class EnvironmentManager():
             self.add(f, config_dir)
 
     def load_plugins(self, plugins_dir: Path):
+        if self.disable_plugins:
+            logging.info("Plugins are disabled. Skip loading plugins.")
+            return
+
         if not(plugins_dir.exists()):
             logging.info("Plugins folder does not exist. Skip loading plugins.")
             return
@@ -55,7 +65,9 @@ class EnvironmentManager():
             self.plugins_module,
             force_reload,
             no_cache,
-            flush_caches
+            flush_caches,
+            self.disable_unregistered_callables,
+            self.load_known_callables_from_modules
         )
         self.resolver_manager.register_resolvers()
 
@@ -150,6 +162,9 @@ class EnvironmentManager():
         result = {name: str(value) for name, value in obj.envs.items()}
         return result
 
+    def get_filename_from_env_name(self, env_name: str):
+        return f"{env_name}.yaml"
+
     def get_target_env_name_from_dependency(self, env_name: str, dep_name: str):
         dep_name = self._normalize_env_or_dependency_name(dep_name)
         if dep_name.startswith("/"):
@@ -164,25 +179,27 @@ class EnvironmentManager():
             target_env_name = self._normalize_env_or_dependency_name(target_env_name)
             return target_env_name
 
-    def get_env_chain(self, name: str, current_chain: List[str] = None) -> List[str]:
+    def get_env_chain(self, name: str, current_chain: List[str] = None, skip_dependency_loops: bool = False) -> List[str]:
         chain = [] if current_chain is None else current_chain
         if name in chain:
-            raise Exception(f"Potential dependency loop detected. Environment name is already in dependency chain: '{name}'.")
+            if skip_dependency_loops:
+                return chain
+            else:
+                raise Exception(f"Potential dependency loop detected. Environment name is already in dependency chain: '{name}'.")
         # to catch potential dependency loops with self, add name to the chain first
         chain.append(name)
         env = self._load_env_yaml(name, EnvironmentConfigurationMinimal)    # type: EnvironmentConfigurationMinimal
         if env.depends_on:
             for dep_name in env.depends_on:
                 target_env_name = self.get_target_env_name_from_dependency(name, dep_name)
-                chain = self.get_env_chain(target_env_name, chain)
+                chain = self.get_env_chain(target_env_name, chain, skip_dependency_loops)
         return chain
 
-
-    def get_env_list_chain(self, names: List[str]):
+    def get_env_list_chain(self, names: List[str], skip_dependency_loops: bool = False):
         chain = []
         # start from last envrionment (the one that should be on top)
         for name in reversed(names):
-            chain = self.get_env_chain(name, chain)
+            chain = self.get_env_chain(name, chain, skip_dependency_loops)
         # reverse the list so environments are in the sequence, in which they need to be applied
         chain = list(reversed(chain))
         return chain

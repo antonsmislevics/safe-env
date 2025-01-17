@@ -1,17 +1,23 @@
 import urllib.parse
 from typing import Any, Dict, List
 import re
+import json
 import requests
 from azure.keyvault.secrets import SecretClient
 from azure.keyvault.certificates import CertificateClient
 
-from ..models import AzureKeyVaultCertificate
+from ..models import (
+    AzureKeyVaultCertificate,
+    AzureKeyVaultKey
+)
+
 
 
 def get_azure_key_vault_secrets(
     url: str,
     credential: Any,
-    names: List[str]
+    names: List[str],
+    include_properties: bool = False
 ) -> Dict[str, Any]:
     if names is None:
         return None
@@ -23,7 +29,14 @@ def get_azure_key_vault_secrets(
         value = None
         secret = client.get_secret(name)
         if secret is not None:
-            value = secret.value        
+            if include_properties:
+                value = AzureKeyVaultKey.model_validate(
+                    secret,
+                    from_attributes=True
+                ).model_dump_json()        # ensures that the output can later be cached with regular json serializer
+                value = json.loads(value)
+            else:
+                value = secret.value        
         result[name] = value
     return result
 
@@ -52,11 +65,13 @@ def get_azure_key_vault_certificates(
         certificate_thumbprint = certificate.properties.x509_thumbprint.hex()
         certificate_private_key = secret.value
 
-        result[cert_name] = AzureKeyVaultCertificate(
+        value = AzureKeyVaultCertificate(
             name=cert_name,
             thumbprint=certificate_thumbprint,
             private_key=certificate_private_key
-        ).model_dump()
+        ).model_dump_json()                 # ensures that the output can later be cached with regular json serializer
+        value = json.loads(value)
+        result[cert_name] = value
 
     return result
     

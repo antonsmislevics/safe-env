@@ -1,16 +1,25 @@
 import sys
 import logging
 from pathlib import Path
+from typing import List
 from .envmanager import EnvironmentManager
 
 class AppContext():
-    def __init__(self, config_dir: Path = None, verbose: bool = False):
+    def __init__(self, 
+                 config_dir: Path = None,
+                 verbose: bool = False,
+                 disable_plugins: bool = False,
+                 disable_unregistered_callables: bool = False,
+                 load_known_callables_from_modules: List[str] = None):
         if not(config_dir):
             config_dir = Path("envs")
             
         self.config_dir = config_dir
         self.plugins_dir = config_dir.joinpath("plugins")
         self.verbose = verbose
+        self.disable_plugins = disable_plugins
+        self.disable_unregistered_callables = disable_unregistered_callables
+        self.load_known_callables_from_modules = load_known_callables_from_modules
         self.command_mode = False
         self.envman = None
 
@@ -25,7 +34,7 @@ class AppContext():
 
 
     def _load_env_man(self):
-        self.envman = EnvironmentManager()
+        self.envman = EnvironmentManager(self.disable_plugins, self.disable_unregistered_callables, self.load_known_callables_from_modules)
         self.envman.load_from_folder(self.config_dir)
         self.envman.load_plugins(self.plugins_dir)
 
