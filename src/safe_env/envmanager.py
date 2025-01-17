@@ -190,7 +190,8 @@ class EnvironmentManager():
         chain.append(name)
         env = self._load_env_yaml(name, EnvironmentConfigurationMinimal)    # type: EnvironmentConfigurationMinimal
         if env.depends_on:
-            for dep_name in env.depends_on:
+            # start with the last dependency (top layer)
+            for dep_name in reversed(env.depends_on):
                 target_env_name = self.get_target_env_name_from_dependency(name, dep_name)
                 chain = self.get_env_chain(target_env_name, chain, skip_dependency_loops)
         return chain
