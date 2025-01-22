@@ -2,22 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://antonsmislevics.github.io/safe-env/</loc>
-         <lastmod>2025-01-14</lastmod>
+         <lastmod>2025-01-22</lastmod>
     </url>
     <url>
          <loc>https://antonsmislevics.github.io/safe-env/getting-started/</loc>
-         <lastmod>2025-01-14</lastmod>
+         <lastmod>2025-01-22</lastmod>
     </url>
     <url>
          <loc>https://antonsmislevics.github.io/safe-env/plugins/</loc>
-         <lastmod>2025-01-14</lastmod>
+         <lastmod>2025-01-22</lastmod>
     </url>
     <url>
          <loc>https://antonsmislevics.github.io/safe-env/working-with-envs/</loc>
-         <lastmod>2025-01-14</lastmod>
+         <lastmod>2025-01-22</lastmod>
     </url>
     <url>
          <loc>https://antonsmislevics.github.io/safe-env/working-with-secrets/</loc>
-         <lastmod>2025-01-14</lastmod>
+         <lastmod>2025-01-22</lastmod>
     </url>
 </urlset>
