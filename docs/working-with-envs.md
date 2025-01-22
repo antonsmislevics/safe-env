@@ -171,7 +171,10 @@ Second, we can call `se activate` passing a type of a shell as additional parame
 
     set "var1=dev_var1";set "var2=param1_value - param2_value";set "var3=param3_value";set "env_name=dev_env"
 
-    # copy/paste to execute the script manually
+    # copy to clipboard
+    se activate dev --cmd | clip
+
+    # paste and execute script manually
     ```
 
 ### Option 3: Generate .env file for Docker
