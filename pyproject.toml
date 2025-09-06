@@ -14,6 +14,7 @@ dependencies = [
     "azure-keyvault-secrets>=4.9.0",
     "fsspec>=2024.12.0",
     "jmespath>=1.0.1",
+    "keepercommander>=17.1.8",
     "keyring>=25.5.0",
     "omegaconf>=2.3.0",
     "pydantic>=2.10.2",

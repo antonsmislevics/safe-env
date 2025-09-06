@@ -9,6 +9,8 @@ from azure.identity import (
     VisualStudioCodeCredential,
 )
 
+from .auth_keeper import get_keeper_login_params
+
 
 def get_azure_credential_token(credential: Any, scope: str):
     credential_token = credential.get_token(scope)
@@ -21,5 +23,6 @@ KNOWN_AUTH_CLASSES = {
     "azure.managedidentity": ManagedIdentityCredential,
     "azure.devicecode": DeviceCodeCredential,
     "azure.vscode": VisualStudioCodeCredential,
-    "azure.token": get_azure_credential_token
+    "azure.token": get_azure_credential_token,
+    "keeper": get_keeper_login_params
 }
